@@ -104,7 +104,7 @@ function parseUniDiffs(diffOutput: jsDiff.IUniDiff[]): FilePatch[] {
 						if (edit == null) {
 							edit = new Edit(EditTypes.EDIT_DELETE, new Position(startLine - 1, 0));
 						}
-						edit.end = new Position(startLine, 0);
+						edit.end = new Position(startLine - 1, line.length - 1);
 						startLine++;
 						break;
 					case '+':
@@ -113,7 +113,7 @@ function parseUniDiffs(diffOutput: jsDiff.IUniDiff[]): FilePatch[] {
 						} else if (edit.action === EditTypes.EDIT_DELETE) {
 							edit.action = EditTypes.EDIT_REPLACE;
 						}
-						edit.text += line.substr(1) + '\n';
+						edit.text += (edit.text ? '\n' : '') + line.substr(1);
 						break;
 					case ' ':
 						startLine++;
