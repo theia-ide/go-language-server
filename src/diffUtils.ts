@@ -118,6 +118,9 @@ function parseUniDiffs(diffOutput: jsDiff.IUniDiff[]): FilePatch[] {
 					case ' ':
 						startLine++;
 						if (edit != null) {
+							if (edit.text) {
+								edit.text += '\n';
+							}
 							edits.push(edit);
 						}
 						edit = null;
