@@ -5,9 +5,9 @@
 
 'use strict';
 
-import vscode = require('vscode');
+import * as vscode from '../src-vscode-mock/vscode';
 import path = require('path');
-import { TextDocument, CancellationToken, CodeLens, Command } from 'vscode';
+import { TextDocument, CancellationToken, CodeLens, Command } from '../src-vscode-mock/vscode';
 import { getTestFunctions, getBenchmarkFunctions, getTestFlags } from './testUtils';
 import { GoDocumentSymbolProvider } from './goOutline';
 import { getCurrentGoPath } from './util';
@@ -32,7 +32,7 @@ export class GoRunTestCodeLensProvider extends GoBaseCodeLensProvider {
 		let codeLensConfig = config.get('enableCodeLens');
 		let codelensEnabled = codeLensConfig ? codeLensConfig['runtest'] : false;
 		if (!codelensEnabled || !document.fileName.endsWith('_test.go')) {
-			return;
+			return [];
 		}
 
 		return Promise.all([

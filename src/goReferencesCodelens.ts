@@ -1,7 +1,7 @@
 'use strict';
 
-import vscode = require('vscode');
-import { SymbolInformation, TextDocument, CancellationToken, CodeLens, Range, Command, Location, commands } from 'vscode';
+import * as vscode from '../src-vscode-mock/vscode';
+import { SymbolInformation, TextDocument, CancellationToken, CodeLens, Range, Command, Location, commands } from '../src-vscode-mock/vscode';
 import { GoDocumentSymbolProvider } from './goOutline';
 import { GoReferenceProvider } from './goReferences';
 import { GoBaseCodeLensProvider } from './goBaseCodelens';
@@ -37,7 +37,9 @@ export class GoReferencesCodeLensProvider extends GoBaseCodeLensProvider {
 				if (symbol.kind === vscode.SymbolKind.Function) {
 					let funcDecl = document.lineAt(position.line).text.substr(position.character);
 					let match = methodRegex.exec(funcDecl);
-					position = position.translate(0, match ? match[0].length : 5);
+					// [TypeFox]
+					//position = position.translate(0, match ? match[0].length : 5);
+					position = new vscode.Position(position.line, position.character + (match ? match[0].length : 5));
 				}
 				return new ReferencesCodeLens(document, symbol, new vscode.Range(position, position));
 			});

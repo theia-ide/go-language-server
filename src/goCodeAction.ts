@@ -5,7 +5,7 @@
 
 'use strict';
 
-import vscode = require('vscode');
+import * as vscode from '../src-vscode-mock/vscode';
 import { listPackages } from './goImport';
 import * as _ from 'lodash';
 

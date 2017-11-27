@@ -5,8 +5,8 @@
 
 'use strict';
 
-import vscode = require('vscode');
-import { SignatureHelpProvider, SignatureHelp, SignatureInformation, ParameterInformation, TextDocument, Position, CancellationToken, WorkspaceConfiguration } from 'vscode';
+import * as vscode from '../src-vscode-mock/vscode';
+import { SignatureHelpProvider, SignatureHelp, SignatureInformation, ParameterInformation, TextDocument, Position, CancellationToken, WorkspaceConfiguration } from '../src-vscode-mock/vscode';
 import { definitionLocation } from './goDeclaration';
 import { parameters } from './util';
 
@@ -81,7 +81,9 @@ export class GoSignatureHelpProvider implements SignatureHelpProvider {
 			if (word) {
 				return word.start;
 			}
-			position = position.translate(0, -1);
+			// [TypeFox]
+			// position = position.translate(0, -1);
+			position = new Position(position.line, position.character - 1);
 		}
 		return null;
 	}
