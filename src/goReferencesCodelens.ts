@@ -1,6 +1,7 @@
 'use strict';
 
 import * as vscode from '../src-vscode-mock/vscode';
+import { uriToStringUri } from '../src-vscode-mock/utils';
 import { SymbolInformation, TextDocument, CancellationToken, CodeLens, Range, Command, Location, commands } from '../src-vscode-mock/vscode';
 import { GoDocumentSymbolProvider } from './goOutline';
 import { GoReferenceProvider } from './goReferences';
@@ -62,8 +63,11 @@ export class GoReferencesCodeLensProvider extends GoBaseCodeLensProvider {
 				title: references.length === 1
 					? '1 reference'
 					: references.length + ' references',
-				command: 'editor.action.showReferences',
-				arguments: [codeLens.document.uri, codeLens.range.start, references]
+				// [TypeFox]
+				//command: 'editor.action.showReferences',
+				//arguments: [codeLens.document.uri, codeLens.range.start, references]
+				command: 'go.editor.action.showReferences',
+				arguments: [uriToStringUri(codeLens.document.uri), codeLens.range.start, references]
 			};
 			return codeLens;
 		}, err => {
