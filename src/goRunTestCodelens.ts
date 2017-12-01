@@ -5,9 +5,9 @@
 
 'use strict';
 
-import vscode = require('vscode');
+import * as vscode from '../src-vscode-mock/vscode';
 import path = require('path');
-import { TextDocument, CancellationToken, CodeLens, Command } from 'vscode';
+import { TextDocument, CancellationToken, CodeLens, Command } from '../src-vscode-mock/vscode';
 import { getTestFunctions, getBenchmarkFunctions, getTestFlags } from './testUtils';
 import { GoDocumentSymbolProvider } from './goOutline';
 import { getCurrentGoPath } from './util';

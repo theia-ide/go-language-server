@@ -4,6 +4,8 @@
 
 'use strict';
 
+// [TypeFox] unused, as we can't map text editor decorators
+
 import vscode = require('vscode');
 import path = require('path');
 import os = require('os');

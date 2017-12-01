@@ -8,6 +8,10 @@
 			"es2015"
 		]
 	},
+	"include": [
+		"src",
+		"src-vscode-mock"
+	],
 	"exclude": [
 		"node_modules"
 	]

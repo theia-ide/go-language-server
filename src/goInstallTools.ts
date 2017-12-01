@@ -5,7 +5,7 @@
 
 'use strict';
 
-import vscode = require('vscode');
+import * as vscode from '../src-vscode-mock/vscode';
 import fs = require('fs');
 import path = require('path');
 import cp = require('child_process');

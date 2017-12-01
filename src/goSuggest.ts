@@ -5,7 +5,8 @@
 
 'use strict';
 
-import vscode = require('vscode');
+import * as vscode from '../src-vscode-mock/vscode';
+import { Thenable } from '../src-vscode-mock/thenable';
 import cp = require('child_process');
 import { getBinPath, parameters, parseFilePrelude, isPositionInString, goKeywords, getToolsEnvVars, guessPackageNameFromFile, goBuiltinTypes, byteOffsetAt } from './util';
 import { promptForMissingTool } from './goInstallTools';
@@ -66,7 +67,7 @@ export class GoCompletionItemProvider implements vscode.CompletionItemProvider {
 					let word = document.getText(wordAtPosition);
 					currentWord = word.substr(0, position.character - wordAtPosition.start.character);
 				}
-
+				
 				if (currentWord.match(/^\d+$/)) {
 					return resolve([]);
 				}
@@ -182,7 +183,10 @@ export class GoCompletionItemProvider implements vscode.CompletionItemProvider {
 										paramSnippets.push('${' + (i + 1) + ':' + param + '}');
 									}
 								}
-								item.insertText = new vscode.SnippetString(suggest.name + '(' + paramSnippets.join(', ') + ')');
+								// [TypeFox]
+								// item.insertText = new vscode.SnippetString(suggest.name + '(' + paramSnippets.join(', ') + ')');
+								item.insertText = suggest.name + '(' + paramSnippets.join(', ') + ')';
+								item.insertTextFormat = vscode.InsertTextFormat.Snippet
 							}
 
 							if (wordAtPosition && wordAtPosition.start.character === 0 &&

@@ -6,7 +6,7 @@
 'use strict';
 
 import { GO_MODE } from './goMode';
-import vscode = require('vscode');
+import * as vscode from '../src-vscode-mock/vscode';
 
 export let outputChannel = vscode.window.createOutputChannel('Go');
 

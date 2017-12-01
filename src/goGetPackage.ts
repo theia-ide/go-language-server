@@ -1,6 +1,6 @@
 'use strict';
 
-import vscode = require('vscode');
+import * as vscode from '../src-vscode-mock/vscode';
 import cp = require('child_process');
 import { getGoRuntimePath } from './goPath';
 import { getImportPath, getCurrentGoPath } from './util';

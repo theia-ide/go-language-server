@@ -5,6 +5,6 @@
 
 'use strict';
 
-import vscode = require('vscode');
+import * as vscode from '../src-vscode-mock/vscode';
 
 export const GO_MODE: vscode.DocumentFilter = { language: 'go', scheme: 'file' };
