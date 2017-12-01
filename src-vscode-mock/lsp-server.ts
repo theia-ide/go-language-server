@@ -233,7 +233,7 @@ export class LspServer {
         const document = this.getOpenDocument(args[args.length - 2] as string)
         const selection = args[args.length - 1] as Range
         this.activateEditor(document, selection)
-        return commands.executeCommand(params.command, args.slice(0, -2))
+        return commands.executeCommand(params.command, ...args.slice(0, -2))
     }
 
     public async documentHighlight(arg: lsp.TextDocumentPositionParams): Promise<lsp.DocumentHighlight[]> {

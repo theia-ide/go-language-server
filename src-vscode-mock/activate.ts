@@ -26,8 +26,6 @@ export function activate(lspClient: LspClient, lspServer: LspServer, logger: Log
 
 	commands.lspClient = lspClient
 	commands.registerCommand('go.import.add', (arg: string) => {
-		if (Array.isArray(arg) && arg.length == 1)
-			arg = arg[0]
 		return addImport(typeof arg === 'string' ? arg : null);
 	})
 
