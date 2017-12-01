@@ -22,9 +22,7 @@ class Window {
 		return new StatusBarItem(alignment, priority)
 	}
 
-	// export function createTextEditorDecorationType
 	onDidChangeActiveTextEditor: Event<TextEditor>
-	// export function showErrorMessage
 
 	showInformationMessage<T>(message: string, ...items: T[]): Thenable<T | undefined> {
 		if (items) {
@@ -41,11 +39,7 @@ class Window {
 		return this.lspClient.showInformationMessage('', ...items).then(selection => {
 			return items.find(item => item === selection)
 		})
-}
-	
-	// export function showInputBox
-	// export function showQuickPick
-	// export function showTextDocument
+	}
 }
 
 export const window = new Window()
