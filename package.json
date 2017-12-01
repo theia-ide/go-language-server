@@ -1,6 +1,6 @@
 {
   "name": "go-language-server",
-  "version": "0.6.67",
+  "version": "0.0.0",
   "description": "A Go language server based on the Rich Go language support for Visual Studio Code",
   "author": {
     "name": "TypeFox and Microsoft Corporation - Development Labs"
