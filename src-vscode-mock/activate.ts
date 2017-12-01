@@ -12,6 +12,7 @@ import { vetCode } from '../src/goVet';
 import * as goGenerateTests from '../src/goGenerateTests';
 import { goGetPackage } from '../src/goGetPackage';
 import { addTags, removeTags } from '../src/goModifytags';
+import { playgroundCommand } from '../src/goPlayground';
 
 export function activate(lspClient: LspClient, lspServer: LspServer, logger: Logger) {
 	console.log = logger.log.bind(logger)
@@ -58,4 +59,6 @@ export function activate(lspClient: LspClient, lspServer: LspServer, logger: Log
 	commands.registerCommand('go.remove.tags', (args) => {
 		removeTags(args);
 	});
+
+	commands.registerCommand('go.playground', playgroundCommand)
 }
