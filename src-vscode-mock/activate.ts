@@ -9,7 +9,7 @@ import { window } from './window';
 import { Logger } from './logger';
 import { lintCode } from '../src/goLint';
 import { vetCode } from '../src/goVet';
-
+import * as goGenerateTests from '../src/goGenerateTests';
 
 export function activate(lspClient: LspClient, lspServer: LspServer, logger: Logger) {
 	console.log = logger.log.bind(logger)
@@ -32,4 +32,17 @@ export function activate(lspClient: LspClient, lspServer: LspServer, logger: Log
 	commands.registerCommand('go.lint.workspace', () => lintCode(true));
 	commands.registerCommand('go.vet.package', vetCode);
 	commands.registerCommand('go.vet.workspace', () => vetCode(true));
+	commands.registerCommand('go.test.generate.package', () => {
+		goGenerateTests.generateTestCurrentPackage();
+	});
+	commands.registerCommand('go.test.generate.file', () => {
+		goGenerateTests.generateTestCurrentFile();
+	});
+	commands.registerCommand('go.test.generate.function', () => {
+		goGenerateTests.generateTestCurrentFunction();
+	});
+
+	// unmapped:
+	// 'go.toggle.test.file': missing command 'open.file'
+
 }

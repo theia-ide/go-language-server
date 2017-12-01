@@ -145,6 +145,10 @@ export class TextDocument {
 	get isUntitled(): boolean {
 		return false
 	}
+
+	get isDirty(): boolean {
+		return false
+	}
 }
 
 export class TextDocumentChangeEvent {

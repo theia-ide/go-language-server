@@ -1,3 +1,4 @@
+import { uriToPath, uriToStringUri } from '../src-vscode-mock/utils';
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.
@@ -7,7 +8,7 @@
 
 import cp = require('child_process');
 import path = require('path');
-import vscode = require('vscode');
+import * as vscode from '../src-vscode-mock/vscode';
 
 import { getBinPath, getToolsEnvVars } from './util';
 import { promptForMissingTool } from './goInstallTools';
@@ -86,14 +87,16 @@ export function generateTestCurrentFunction(): Thenable<boolean> {
 		let currentFunction: vscode.SymbolInformation;
 		for (let func of functions) {
 			let selection = editor.selection;
-			if (selection && func.location.range.contains(selection.start)) {
-				currentFunction = func;
+			// [TypeFox]
+			// if (selection && func.location.range.contains(selection.start)) {
+			if (selection && vscode.Range.contains(func.location.range, selection.start)) {
+					currentFunction = func;
 				break;
 			}
 		};
 		if (!currentFunction) {
 			vscode.window.showInformationMessage('No function found at cursor.');
-			return;
+			return Promise.resolve(false);
 		}
 		let funcName = currentFunction.name;
 		if (funcName.includes('.')) {
@@ -117,7 +120,7 @@ interface Config {
 	func?: string;
 }
 
-function generateTests(conf: Config): Thenable<boolean> {
+function generateTests(conf: Config): PromiseLike<boolean> {
 	return new Promise<boolean>((resolve, reject) => {
 		let cmd = getBinPath('gotests');
 		let args;

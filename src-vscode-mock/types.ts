@@ -121,6 +121,13 @@ export class Range implements lsp.Range {
 		}
 	}
 
+	static contains(range: lsp.Range, position: lsp.Position) : boolean {
+		return (range.start.line < position.line 
+				|| (range.start.line == position.line && range.start.character <= position.character))
+			&& (range.end.line > position.line
+				|| (range.end.line == position.line && range.end.character >= position.character))
+	}
+
 	isEmpty() : boolean {
 		return this.start.line === this.end.line
 		&& this.start.character === this.end.character
