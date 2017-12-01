@@ -11,6 +11,7 @@ import { lintCode } from '../src/goLint';
 import { vetCode } from '../src/goVet';
 import * as goGenerateTests from '../src/goGenerateTests';
 import { goGetPackage } from '../src/goGetPackage';
+import { addTags, removeTags } from '../src/goModifytags';
 
 export function activate(lspClient: LspClient, lspServer: LspServer, logger: Logger) {
 	console.log = logger.log.bind(logger)
@@ -28,11 +29,15 @@ export function activate(lspClient: LspClient, lspServer: LspServer, logger: Log
 			arg = arg[0]
 		return addImport(typeof arg === 'string' ? arg : null);
 	})
+
 	commands.registerCommand('go.install.package', installCurrentPackage);
+
 	commands.registerCommand('go.lint.package', lintCode);
 	commands.registerCommand('go.lint.workspace', () => lintCode(true));
+
 	commands.registerCommand('go.vet.package', vetCode);
 	commands.registerCommand('go.vet.workspace', () => vetCode(true));
+
 	commands.registerCommand('go.test.generate.package', () => {
 		goGenerateTests.generateTestCurrentPackage();
 	});
@@ -42,10 +47,15 @@ export function activate(lspClient: LspClient, lspServer: LspServer, logger: Log
 	commands.registerCommand('go.test.generate.function', () => {
 		goGenerateTests.generateTestCurrentFunction();
 	});
-
 	// unmapped:
 	// 'go.toggle.test.file': missing command 'open.file'
 
 	commands.registerCommand('go.get.package', goGetPackage);
 	
+	commands.registerCommand('go.add.tags', (args) => {
+		addTags(args);
+	});
+	commands.registerCommand('go.remove.tags', (args) => {
+		removeTags(args);
+	});
 }

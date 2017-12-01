@@ -5,7 +5,7 @@
 
 'use strict';
 
-import vscode = require('vscode');
+import * as vscode from '../src-vscode-mock/vscode';
 import { byteOffsetAt, getBinPath, getFileArchive, getToolsEnvVars } from './util';
 import cp = require('child_process');
 import { promptForMissingTool } from './goInstallTools';
@@ -105,21 +105,23 @@ function getTagsAndOptions(config: GoTagsConfig, commandArgs: GoTagsConfig): The
 	let promptForTags =  commandArgs && commandArgs.hasOwnProperty('promptForTags') ? commandArgs['promptForTags'] : config['promptForTags'];
 	let transformValue = commandArgs && commandArgs.hasOwnProperty('transform') ? commandArgs['transform'] : config['transform'];
 
-	if (!promptForTags) {
+	// [TypeFox]
+	// if (!promptForTags) {
 		return Promise.resolve([tags, options, transformValue]);
-	}
-
-	return vscode.window.showInputBox({
-		value: 'json',
-		prompt: 'Enter comma separated tag names'
-	}).then(inputTags => {
-		return vscode.window.showInputBox({
-			value: 'json=omitempty,xml=cdata',
-			prompt: 'Enter comma separated options'
-		}).then(inputOptions => {
-			return [inputTags, inputOptions, transformValue];
-		});
-	});
+	// [TypeFox]
+	// }
+	
+	// return vscode.window.showInputBox({
+	// 	value: 'json',
+	// 	prompt: 'Enter comma separated tag names'
+	// }).then(inputTags => {
+	// 	return vscode.window.showInputBox({
+	// 		value: 'json=omitempty,xml=cdata',
+	// 		prompt: 'Enter comma separated options'
+	// 	}).then(inputOptions => {
+	// 		return [inputTags, inputOptions, transformValue];
+	// 	});
+	// });
 }
 
 function runGomodifytags(args: string[]) {
