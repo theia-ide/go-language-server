@@ -5,7 +5,7 @@
 
 'use strict';
 
-import vscode = require('vscode');
+import * as vscode from '../src-vscode-mock/vscode';
 import cp = require('child_process');
 import { getBinPath, getFileArchive, getToolsEnvVars, killProcess } from './util';
 import { promptForMissingTool, promptForUpdatingTool } from './goInstallTools';
@@ -122,7 +122,7 @@ export class GoDocumentSymbolProvider implements vscode.DocumentSymbolProvider {
 				label,
 				this.goKindToCodeKind[decl.type],
 				new vscode.Range(document.positionAt(start), document.positionAt(end)),
-				undefined,
+				document.uri,
 				containerName);
 			symbols.push(symbolInfo);
 			if (decl.children) {

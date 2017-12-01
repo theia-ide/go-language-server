@@ -1,5 +1,7 @@
 'use strict';
 
+// [TypeFox] unused as we don't support debugging
+
 import vscode = require('vscode');
 import { getCurrentGoPath } from './util';
 

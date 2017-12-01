@@ -1,4 +1,4 @@
-import vscode = require('vscode');
+import * as vscode from '../src-vscode-mock/vscode';
 import * as path from 'path';
 import { execFile } from 'child_process';
 import { outputChannel } from './goStatus';
