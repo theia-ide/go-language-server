@@ -1,7 +1,7 @@
 'use strict';
 
 // [TypeFox] not used in favor of goBuild
-import * as vscode from '../src-vscode-mock/vscode';
+import vscode = require('vscode');
 import { getBinPath, getToolsEnvVars } from './util';
 import cp = require('child_process');
 import path = require('path');
