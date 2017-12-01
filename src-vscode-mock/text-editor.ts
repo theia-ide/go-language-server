@@ -1,16 +1,16 @@
 import { workspace } from './workspace';
 import { LspClient } from './lsp-client';
 import { TextDocument } from './text-document';
-import { Position, Range, WorkspaceEdit } from './types';
+import { Position, Selection, Range, WorkspaceEdit } from './types';
 import * as lsp from 'vscode-languageserver';
 import { TextEdit } from 'vscode-languageserver';
 
 export class TextEditor {
 
-	selection: Range
+	selection: Selection
 
 	constructor(readonly document: TextDocument, readonly lspClient: LspClient) {
-		this.selection = new Range(0, 0, 0, 0)
+		this.selection = new Selection(new Range(0, 0, 0, 0))
 	}
 
 	edit(editBuilder: (edit: TextEditorEdit) => void) {

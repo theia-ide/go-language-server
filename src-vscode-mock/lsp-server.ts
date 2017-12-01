@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2017 TypeFox and others.
  *
@@ -35,6 +34,7 @@ import { GoRunTestCodeLensProvider } from '../src/goRunTestCodelens';
 import { GoRenameProvider } from '../src/goRename';
 import { GoSignatureHelpProvider } from '../src/goSignature';
 import { GoWorkspaceSymbolProvider } from '../src/goSymbol';
+import { Selection } from './vscode';
 
 export interface IServerOptions {
     logger: Logger
@@ -277,7 +277,7 @@ export class LspServer {
     private activateEditor(document: TextDocument, selection?: lsp.Range): TextDocument {
         window.activeTextEditor = window.visibleTextEditors.find(editor => editor.document.uri === document.uri)
         if (selection)
-            window.activeTextEditor.selection = new Range(selection.start, selection.end)
+            window.activeTextEditor.selection = new Selection(new Range(selection.start, selection.end))
         return document
     }
 }

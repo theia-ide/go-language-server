@@ -1,4 +1,3 @@
-import { uriToPath, uriToStringUri } from '../src-vscode-mock/utils';
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License. See License.txt in the project root for license information.

@@ -5,6 +5,8 @@
 
 'use strict';
 
+// [TypeFox] unused as it relies on goCover (which needs text editor decorators)
+
 import vscode = require('vscode');
 import path = require('path');
 import os = require('os');

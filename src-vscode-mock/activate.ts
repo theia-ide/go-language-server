@@ -10,6 +10,7 @@ import { Logger } from './logger';
 import { lintCode } from '../src/goLint';
 import { vetCode } from '../src/goVet';
 import * as goGenerateTests from '../src/goGenerateTests';
+import { goGetPackage } from '../src/goGetPackage';
 
 export function activate(lspClient: LspClient, lspServer: LspServer, logger: Logger) {
 	console.log = logger.log.bind(logger)
@@ -45,4 +46,6 @@ export function activate(lspClient: LspClient, lspServer: LspServer, logger: Log
 	// unmapped:
 	// 'go.toggle.test.file': missing command 'open.file'
 
+	commands.registerCommand('go.get.package', goGetPackage);
+	
 }

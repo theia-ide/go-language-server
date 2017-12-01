@@ -40,6 +40,13 @@ class Window {
 			return items.find(item => item === selection)
 		})
 	}
+
+	showErrorMessage(message: string) {
+		this.lspClient.showMessage({
+			message: message,
+			type: lsp.MessageType.Error
+		})
+	}
 }
 
 export const window = new Window()
