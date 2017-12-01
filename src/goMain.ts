@@ -133,9 +133,9 @@ export let warningDiagnosticCollection: vscode.DiagnosticCollection;
 // 	ctx.subscriptions.push(vscode.languages.registerImplementationProvider(GO_MODE, new GoImplementationProvider()));
 // 	ctx.subscriptions.push(vscode.debug.registerDebugConfigurationProvider('go', new GoDebugConfigurationProvider()));
 
-// 	errorDiagnosticCollection = vscode.languages.createDiagnosticCollection('go-error');
+ 	errorDiagnosticCollection = vscode.languages.createDiagnosticCollection('go-error');
 // 	ctx.subscriptions.push(errorDiagnosticCollection);
-// 	warningDiagnosticCollection = vscode.languages.createDiagnosticCollection('go-warning');
+ 	warningDiagnosticCollection = vscode.languages.createDiagnosticCollection('go-warning');
 // 	ctx.subscriptions.push(warningDiagnosticCollection);
 // 	vscode.workspace.onDidChangeTextDocument(removeCodeCoverage, null, ctx.subscriptions);
 // 	vscode.workspace.onDidChangeTextDocument(removeTestStatus, null, ctx.subscriptions);
