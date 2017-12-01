@@ -7,15 +7,17 @@ import * as vscode from '../src-vscode-mock/vscode';
 import path = require('path');
 import { getGoRuntimePath, getBinPathWithPreferredGopath, resolveHomeDir, getInferredGopath } from './goPath';
 import cp = require('child_process');
+import TelemetryReporter from '../src-vscode-mock/vscode-extension-telemetry';
 import fs = require('fs');
 import os = require('os');
 import { outputChannel } from './goStatus';
 import { errorDiagnosticCollection, warningDiagnosticCollection } from './goMain';
 
+const extensionId: string = 'lukehoban.Go';
 // [TypeFox]
-// const extensionId: string = 'lukehoban.Go';
 // const extensionVersion: string = vscode.extensions.getExtension(extensionId).packageJSON.version;
-// const aiKey: string = 'AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217';
+const extensionVersion = '0.1.0'
+const aiKey: string = 'AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217';
 
 export const goKeywords: string[] = [
 	'break',
@@ -52,8 +54,7 @@ export interface SemVersion {
 
 let goVersion: SemVersion = null;
 let vendorSupport: boolean = null;
-// [TypeFox]
-// let telemtryReporter: TelemetryReporter;
+let telemtryReporter: TelemetryReporter;
 let toolsGopath: string;
 
 export function byteOffsetAt(document: vscode.TextDocument, position: vscode.Position): number {
@@ -232,15 +233,14 @@ export function isVendorSupported(): Promise<boolean> {
  * If not set, then prompts user to do set GOPATH
  */
 export function isGoPathSet(): boolean {
-	// [TypeFox]
-	// if (!getCurrentGoPath()) {
-	// 	vscode.window.showInformationMessage('Set GOPATH environment variable and restart VS Code or set GOPATH in Workspace settings', 'Set GOPATH in Workspace Settings').then(selected => {
-	// 		if (selected === 'Set GOPATH in Workspace Settings') {
-	// 			vscode.commands.executeCommand('workbench.action.openWorkspaceSettings');
-	// 		}
-	// 	});
-	// 	return false;
-	// }
+	if (!getCurrentGoPath()) {
+		vscode.window.showInformationMessage('Set GOPATH environment variable and restart VS Code or set GOPATH in Workspace settings', 'Set GOPATH in Workspace Settings').then(selected => {
+			if (selected === 'Set GOPATH in Workspace Settings') {
+				vscode.commands.executeCommand('workbench.action.openWorkspaceSettings');
+			}
+		});
+		return false;
+	}
 
 	return true;
 }
@@ -251,9 +251,8 @@ export function sendTelemetryEvent(eventName: string, properties?: {
 	[key: string]: number;
 }): void {
 
-	// [TypeFox]
-	//  telemtryReporter = telemtryReporter ? telemtryReporter : new TelemetryReporter(extensionId, extensionVersion, aiKey);
-	// 	telemtryReporter.sendTelemetryEvent(eventName, properties, measures);
+	telemtryReporter = telemtryReporter ? telemtryReporter : new TelemetryReporter(extensionId, extensionVersion, aiKey);
+	telemtryReporter.sendTelemetryEvent(eventName, properties, measures);
 }
 
 export function isPositionInString(document: vscode.TextDocument, position: vscode.Position): boolean {
@@ -343,16 +342,15 @@ export function getCurrentGoPath(workspaceUri?: vscode.Uri): string {
 	return inferredGopath ? inferredGopath : (configGopath || process.env['GOPATH']);
 }
 
-export function getExtensionCommands(): any[] {
-	// [TypeFox]
-	// let pkgJSON = vscode.extensions.getExtension(extensionId).packageJSON;
-	// if (!pkgJSON.contributes || !pkgJSON.contributes.commands) {
-	// 	return;
-	// }
-	// let extensionCommands: any[] = vscode.extensions.getExtension(extensionId).packageJSON.contributes.commands.filter(x => x.command !== 'go.show.commands');
-	// return extensionCommands;
-	return [];
-}
+// [TypeFox]
+// export function getExtensionCommands(): any[] {
+// 	let pkgJSON = vscode.extensions.getExtension(extensionId).packageJSON;
+// 	if (!pkgJSON.contributes || !pkgJSON.contributes.commands) {
+// 		return;
+// 	}
+// 	let extensionCommands: any[] = vscode.extensions.getExtension(extensionId).packageJSON.contributes.commands.filter(x => x.command !== 'go.show.commands');
+// 	return extensionCommands;
+// }
 
 export class LineBuffer {
 	private buf: string = '';
