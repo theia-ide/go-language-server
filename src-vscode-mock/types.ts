@@ -69,8 +69,11 @@ export namespace InsertTextFormat {
 
 export class Location implements lsp.Location {
 	uri: string
-	range: Range
+	range: lsp.Range
 
+	constructor(range: lsp.Range, uri: string) 
+	constructor(uri: URI, range: lsp.Range) 
+	constructor(uri: URI, position: lsp.Position) 
 	constructor(public readonly rangeOrUri: lsp.Range | URI, public readonly uriRangeOrPosition: string | lsp.Range | lsp.Position) { 
 		if(lsp.Range.is(rangeOrUri)) 
 			this.range = rangeOrUri
@@ -98,18 +101,29 @@ export class Position implements lsp.Position {
 export type ProviderResult<T> = T | undefined | null | Thenable<T | undefined | null>;
 
 export class Range implements lsp.Range {
-	readonly start: Position
-	readonly end: Position
+	readonly start: lsp.Position
+	readonly end: lsp.Position
 
-	constructor(startOrStartLine: Position | number, endOrStartCharacter: Position | number,
+	constructor(range: lsp.Range)
+	constructor(start: lsp.Position, end: lsp.Position)
+	constructor(startLine: number, startCharacter: number, endLine: number, endCharacter: number)
+	constructor(first: lsp.Position | number | lsp.Range, second?: lsp.Position | number,
 		endLine: number = -1, endCharacter: number = -1) {
-		if (endLine !== -1 && endCharacter !== -1) {
-			this.start = new Position(startOrStartLine as number, endOrStartCharacter as number)
-			this.end = new Position(endLine, endCharacter)
+		if (lsp.Range.is(first)) { 
+			this.start = first.start
+			this.end = first.end
+		} else if (lsp.Position.is(first) && lsp.Position.is(second)) {
+			this.start = first as Position
+			this.end = second as Position
 		} else {
-			this.start = startOrStartLine as Position
-			this.end = endOrStartCharacter as Position
+			this.start = new Position(first as number, second as number)
+			this.end = new Position(endLine, endCharacter)
 		}
+	}
+
+	isEmpty() : boolean {
+		return this.start.line === this.end.line
+		&& this.start.character === this.end.character
 	}
 }
 

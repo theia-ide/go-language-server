@@ -7,7 +7,11 @@ import { TextEdit } from 'vscode-languageserver';
 
 export class TextEditor {
 
-	constructor(readonly document: TextDocument, readonly lspClient: LspClient) {}
+	selection: Range
+	
+	constructor(readonly document: TextDocument, readonly lspClient: LspClient) {
+		this.selection = new Range(0, 0, 0, 0)
+	}
 
 	edit(editBuilder: (edit: TextEditorEdit)=>void) {
 		const textEditorEdit = new TextEditorEdit()

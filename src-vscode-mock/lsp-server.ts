@@ -210,7 +210,7 @@ export class LspServer {
 
     public async codeAction(params: lsp.CodeActionParams): Promise<lsp.Command[]> {
         return this.executeOnDocument('codeAction', params, async document => {
-            return this.codeActionProvider.provideCodeActions(document, params.range, params.context, lsp.CancellationToken.None)
+            return this.codeActionProvider.provideCodeActions(document, new Range(params.range), params.context, lsp.CancellationToken.None)
         })
     }
 
@@ -229,7 +229,11 @@ export class LspServer {
 
     public async executeCommand(params: lsp.ExecuteCommandParams): Promise<any> {
         this.logger.log('executeCommand', params);
-        return commands.executeCommand(params.command, params.arguments)
+        const args = params.arguments
+        const document = this.getOpenDocument(args[args.length - 2] as string)
+        const selection = args[args.length - 1] as Range
+        this.activateEditor(document, selection)
+        return commands.executeCommand(params.command, args.slice(0, -2))
     }
 
     public async documentHighlight(arg: lsp.TextDocumentPositionParams): Promise<lsp.DocumentHighlight[]> {
@@ -270,8 +274,10 @@ export class LspServer {
         }
     }
 
-    private activateEditor(document: TextDocument): TextDocument {
+    private activateEditor(document: TextDocument, selection?: lsp.Range): TextDocument {
         window.activeTextEditor = window.visibleTextEditors.find(editor => editor.document.uri === document.uri)
+        if (selection)
+            window.activeTextEditor.selection = new Range(selection.start, selection.end)
         return document
     }
 }
