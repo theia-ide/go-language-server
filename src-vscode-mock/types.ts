@@ -1,6 +1,7 @@
 import { TextDocument } from './text-document';
 import { uriToStringUri } from './utils';
 import { ForkOptions } from 'child_process';
+import { window } from './window'
 import * as lsp from 'vscode-languageserver';
 import URI from 'vscode-uri'
 
@@ -180,10 +181,12 @@ export class SymbolInformation implements lsp.SymbolInformation {
 	constructor(public readonly name: string,
 		public readonly kind: lsp.SymbolKind,
 		public readonly range: lsp.Range,
-		uri: URI,
+		uri: URI | undefined,
 		public readonly containerName?: string) {
 		if (uri)
 			this.location = new Location(range, uriToStringUri(uri))
+		else 
+			this.location = new Location(range, uriToStringUri(window.activeTextEditor.document.uri))
 	}
 }
 
