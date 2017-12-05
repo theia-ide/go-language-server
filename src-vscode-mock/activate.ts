@@ -13,6 +13,8 @@ import * as goGenerateTests from '../src/goGenerateTests';
 import { goGetPackage } from '../src/goGetPackage';
 import { addTags, removeTags } from '../src/goModifytags';
 import { playgroundCommand } from '../src/goPlayground';
+import { CommandConfig } from './config';
+import { buildCode } from '../src/goBuild';
 
 export function activate(lspClient: LspClient, lspServer: LspServer, logger: Logger) {
 	console.log = logger.log.bind(logger)
@@ -59,4 +61,25 @@ export function activate(lspClient: LspClient, lspServer: LspServer, logger: Log
 	});
 
 	commands.registerCommand('go.playground', playgroundCommand)
+
+	commands.registerCommand('go.show.commands', () => {
+		const commandTitles: string[] = []
+		const title2commandId = new Map<string, string>()
+		for (let key of commands.commandMap.keys()) {
+			const title = CommandConfig.instance.getTitle(key)
+			if (title) {
+				title2commandId.set(title, key)
+				commandTitles.push(title)
+			}
+		}
+		window.showQuickPick(commandTitles).then(pick => {
+			const command = title2commandId.get(pick)
+			commands.executeCommand(command)
+		})
+	});
+
+	commands.registerCommand('go.build.package', buildCode);
+
+	commands.registerCommand('go.build.workspace', () => buildCode(true));
+
 }

@@ -9,14 +9,13 @@ import { LspClient } from './lsp-client';
 // TODO implement scopes default / global / workspace / workspace folder
 export class WorkspaceConfiguration {
 
-	private defaultConfig = new DefaultConfig()
 	private workspaceValues = new Map<string, any>()
 
 	readonly [key: string]: any;
 
 	constructor() {
 		for(let k in this.defaultConfig) 
-			(this as any)[k] = this.defaultConfig.get(k)
+			(this as any)[k] = DefaultConfig.instance.get(k)
 	}
 
 	get<T>(section: string): T | undefined {
@@ -25,7 +24,7 @@ export class WorkspaceConfiguration {
 
 	inspect<T>(section: string): { key: string; defaultValue?: T; globalValue?: T; workspaceValue?: T, workspaceFolderValue?: T } | undefined {
 		const value: T = this.workspaceValues.get(section)
-		const defaultValue: T = this.defaultConfig.get(section)
+		const defaultValue: T = DefaultConfig.instance.get(section)
 		if (value ||  defaultValue) {
 			return {
 				key: section,

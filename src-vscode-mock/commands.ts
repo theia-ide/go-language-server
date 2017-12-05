@@ -16,7 +16,7 @@ export class CommandRegistry {
 			throw Error('No such command \'' + command + '\'')
 	}
 
-	registerCommand(command: string, callback: (...args: any[]) => any, thisArg?: any): any {
+	registerCommand(command: string, callback: (...args: any[]) => any, /*, thisArg?: any*/): any {
 		this.commandMap.set(command, callback)
 		const registrationParams = <lsp.RegistrationParams> {
 			registrations: [
