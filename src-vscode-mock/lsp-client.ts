@@ -16,6 +16,7 @@ export interface LspClient {
     publishDiagnostics(args: lsp.PublishDiagnosticsParams): void;
     sendTelemetryEvent(args: any): void;
     showMessage(args: lsp.ShowMessageParams): void;
+    logMessage(args: lsp.LogMessageParams): void;
     showMessageRequest(args: lsp.ShowMessageRequestParams): Promise<lsp.MessageActionItem>;
     applyWorkspaceEdit(args: lsp.ApplyWorkspaceEditParams): Promise<lsp.ApplyWorkspaceEditResponse>;
     showInformationMessage(msg: string, ...options: string[]): Promise<string | undefined>;
@@ -33,6 +34,10 @@ export class LspClientImpl implements LspClient {
         this.connection.sendNotification(lsp.ShowMessageNotification.type, args);
     }
 
+    logMessage(args: lsp.LogMessageParams): void {
+        this.connection.sendNotification(lsp.LogMessageNotification.type, args);
+    }
+
     sendTelemetryEvent(args: any): void {
         this.connection.sendNotification(lsp.TelemetryEventNotification.type, args);
     }
@@ -47,7 +52,7 @@ export class LspClientImpl implements LspClient {
 
     async showInformationMessage(msg: string, ...options: string[]): Promise<string | undefined> {
         if (!options) {
-            this.showMessage({
+            this.showMessageRequest({
                 message: msg,
                 type: 3
             });

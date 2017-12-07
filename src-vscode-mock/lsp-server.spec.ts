@@ -50,6 +50,9 @@ before(async () => {
       showMessage(args: lsp.ShowMessageParams): void {
         throw args // should not be called.
       },
+      logMessage(args: lsp.LogMessageParams): void {
+        throw args // should not be called.
+      },
       async applyWorkspaceEdit(args: lsp.ApplyWorkspaceEditParams): Promise<lsp.ApplyWorkspaceEditResponse> {
         throw new Error('unsupported')
       },

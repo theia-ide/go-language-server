@@ -53,29 +53,36 @@ export const window = new Window()
 
 export class OutputChannel {
 	
+	lspClient: LspClient
+	
 	constructor(readonly name: string) {}
 
 	append(value: string): void {
-		// TODO: implement
+		if(this.lspClient) {
+			this.lspClient.logMessage({
+				message: value,
+				type: lsp.MessageType.Info
+			})
+		}
 	}
 
 	appendLine(value: string): void {
-		// TODO: implement
+		this.append(value)
 	}
 
 	clear(): void {
 		// TODO: implement
 	}
 
-	show(preserveFocus?: boolean): void{
+	show(preserveFocus?: boolean): void {
 		// TODO: implement
 	}
 
-	hide(): void{
+	hide(): void {
 		// TODO: implement
 	}
 
-	dispose(): void{
+	dispose(): void {
 		// TODO: implement
 	}
 }
