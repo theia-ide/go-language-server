@@ -32,7 +32,7 @@ export class LspClientLogger implements Logger {
                 }
             }).join(' ');
 
-            this.client.showMessage({
+            this.client.logMessage({
                 type: severity,
                 message: message
             })
