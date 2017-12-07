@@ -47,7 +47,6 @@ class Workspace {
 
 	onDidChangeTextDocument: Event<TextDocument>;
 	onDidSaveTextDocument: Event<TextDocument>;
-	onDidChangeConfiguration: Event<WorkspaceConfiguration>
 
 	private defaultWorkspaceConfiguration = new WorkspaceConfiguration()
 

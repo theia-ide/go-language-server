@@ -15,7 +15,6 @@ export class DefaultConfig {
 			(this as any)[key] = config[k].default
 		}
 		if (!this['toolsGopath']) {
-			(this as any)['toolsGopath'] = path.resolve(homedir(), 'go');
 			(this as any)['enableCodeLens'] = {
 				runtest: true,
 				references: true
