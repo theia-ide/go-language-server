@@ -73,7 +73,9 @@ export class GoDocumentFormattingEditProvider implements vscode.DocumentFormatti
 				// Return the complete file content in the edit.
 				// VS Code will calculate minimal edits to be applied
 				const fileStart = new vscode.Position(0, 0);
-				const fileEnd = document.lineAt(document.lineCount - 1).range.end;
+				// [TypeFox]
+				// const fileEnd = document.lineAt(document.lineCount - 1).range.end;
+				const fileEnd = document.getPosition(document.text.length)
 				const textEdits: vscode.TextEdit[] = [new vscode.TextEdit(new vscode.Range(fileStart, fileEnd), stdout)];
 
 				let timeTaken = Date.now() - t0;
