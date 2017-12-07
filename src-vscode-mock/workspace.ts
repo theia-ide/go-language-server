@@ -14,12 +14,12 @@ export class WorkspaceConfiguration {
 	readonly [key: string]: any;
 
 	constructor() {
-		for(let k in this.defaultConfig) 
+		for(let k in DefaultConfig.instance) 
 			(this as any)[k] = DefaultConfig.instance.get(k)
 	}
 
 	get<T>(section: string): T | undefined {
-		return this[section] as T
+		return this[section] as T 
 	}
 
 	inspect<T>(section: string): { key: string; defaultValue?: T; globalValue?: T; workspaceValue?: T, workspaceFolderValue?: T } | undefined {

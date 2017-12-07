@@ -42,6 +42,10 @@ export class TextDocument {
 		return this.text.split('\n');
 	}
 
+	get lineCount() : number {
+		return this.lines.length
+	}
+
 	get languageId() {
 		return 'go'
 	}

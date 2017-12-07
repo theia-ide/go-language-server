@@ -32,4 +32,8 @@ export class DiagnosticCollection {
 			uri: uriToStringUri(uri)
 		})
 	}
+
+	get(uri: URI) {
+		return this.store.get(uri)
+	}
  }

@@ -14,12 +14,11 @@ export class DefaultConfig {
 			const key = k.replace(/^go\./, '');
 			(this as any)[key] = config[k].default
 		}
-		if (!this['toolsGopath']) {
-			(this as any)['enableCodeLens'] = {
-				runtest: true,
-				references: true
-			}
-		}
+		(this as any)['enableCodeLens'] = {
+			runtest: true,
+			references: true
+		} as any
+		(this as any)['formatFlags'] = ''
 	}
 
 	get<T>(key: string): T {
