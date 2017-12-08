@@ -6,7 +6,7 @@
   "description": "Rich Go language support for Visual Studio Code",
 =======
   "name": "go-language-server",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A Go language server based on the Rich Go language support for Visual Studio Code",
 >>>>>>> Rebased and squashed changes to VSCode extension code
   "author": {
@@ -987,5 +987,12 @@
         }
       ]
     }
+<<<<<<< HEAD
   }
+=======
+  },
+  "files": [
+    "out/"
+  ]
+>>>>>>> v0.1.1
 }
