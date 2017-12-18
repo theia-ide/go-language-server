@@ -27,6 +27,12 @@ import { MessageType, workspace } from './vscode';
 import { updateGoPathGoRootFromConfig, offerToInstallTools } from '../src/goInstallTools';
 import { getCurrentGoPath } from '../src/util';
 
+let _activated: () => void;
+
+export const activated = new Promise<void>((resolve, reject) => {
+	_activated = resolve;
+});
+
 export function activate(lspClient: LspClient, lspServer: LspServer, logger: Logger) {
 	outputChannel.lspClient = lspClient;
 	window.lspClient = lspClient;
@@ -188,4 +194,6 @@ export function activate(lspClient: LspClient, lspServer: LspServer, logger: Log
 			type: MessageType.Warning
 		});
 	});
+
+	_activated();
 }
