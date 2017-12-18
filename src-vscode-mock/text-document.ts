@@ -12,7 +12,7 @@ export interface Line {
 	text: string;
 }
 
-function applyEdits(before: string, edits: lsp.TextEdit[]): string {
+export function applyEdits(before: string, edits: lsp.TextEdit[]): string {
 	const sorted = edits.sort((a, b) => {
 		if (a.range.start.line === b.range.start.line) {
 			return a.range.start.character - b.range.start.character;

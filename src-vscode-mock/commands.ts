@@ -20,7 +20,10 @@ export class CommandRegistry {
 		if (func)
 			return func.apply(null, rest);
 		else
-			throw Error('No such command \'' + command + '\'');
+			this.lspClient.logMessage({
+				message: 'No such command \'' + command + '\'',
+				type: lsp.MessageType.Error
+			});
 	}
 
 	registerCommand(command: string, callback: (...args: any[]) => any, /*, thisArg?: any*/): any {
