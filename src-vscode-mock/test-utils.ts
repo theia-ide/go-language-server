@@ -11,23 +11,23 @@ import * as lsp from 'vscode-languageserver';
 import { pathToUri } from './utils';
 
 export function uri(
-    suffix: string): string {
-    const resolved =  this.testFilePath(suffix);
-    return pathToUri(resolved);
+	suffix: string): string {
+	const resolved =  this.testFilePath(suffix);
+	return pathToUri(resolved);
 }
 
 export function testWorkspacePath() {
-    return path.resolve(__dirname, '..', '..' ,'test-lsp');
+	return path.resolve(__dirname, '..', '..' , 'test-lsp');
 }
 
 export function testFilePath(suffix: string): string {
-    return path.resolve(testWorkspacePath(), suffix);
+	return path.resolve(testWorkspacePath(), suffix);
 }
 
 export function writeContents(path: string, contents: string) {
-    fs.writeFileSync(path, contents, 'utf-8')
+	fs.writeFileSync(path, contents, 'utf-8');
 }
 
 export function readContents(path: string): string {
-    return fs.readFileSync(path, 'utf-8').toString();
+	return fs.readFileSync(path, 'utf-8').toString();
 }

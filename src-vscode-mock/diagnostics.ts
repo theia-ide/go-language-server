@@ -1,6 +1,6 @@
 import { uriToStringUri } from './utils';
 import * as lsp from 'vscode-languageserver';
-import URI from 'vscode-uri'
+import URI from 'vscode-uri';
 import { Event, Emitter } from 'vscode-jsonrpc';
 
 export class Diagnostic implements lsp.Diagnostic {
@@ -9,9 +9,9 @@ export class Diagnostic implements lsp.Diagnostic {
 
 export class DiagnosticCollection {
 
-	store = new Map<URI, Diagnostic[]>()
-	private onSetEmitter = new Emitter<lsp.PublishDiagnosticsParams>()
-	onSet = this.onSetEmitter.event
+	store = new Map<URI, Diagnostic[]>();
+	private onSetEmitter = new Emitter<lsp.PublishDiagnosticsParams>();
+	onSet = this.onSetEmitter.event;
 
 	constructor(readonly name: string) {}
 
@@ -20,20 +20,20 @@ export class DiagnosticCollection {
 			this.onSetEmitter.fire({
 				diagnostics: [],
 				uri: uriToStringUri(uri)
-			})
-		})
-		this.store.clear()
+			});
+		});
+		this.store.clear();
 	}
 
 	set(uri: URI, diagnostics: Diagnostic[]) {
-		this.store.set(uri, diagnostics)
+		this.store.set(uri, diagnostics);
 		this.onSetEmitter.fire({
 			diagnostics: diagnostics,
 			uri: uriToStringUri(uri)
-		})
+		});
 	}
 
 	get(uri: URI) {
-		return this.store.get(uri)
+		return this.store.get(uri);
 	}
- }
+}

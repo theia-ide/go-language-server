@@ -13,42 +13,42 @@ import { LspClient, LspClientImpl } from './lsp-client';
 import { activate } from './activate';
 
 export interface IServerOptions {
-    goServerPath: string;
-    goServerLogFile?: string;
-    goServerLogVerbosity?: string;
-    showMessageLevel: lsp.MessageType
+	goServerPath: string;
+	goServerLogFile?: string;
+	goServerLogVerbosity?: string;
+	showMessageLevel: lsp.MessageType;
 }
 
 export function createLspConnection(options: IServerOptions): lsp.IConnection {
-    const connection = lsp.createConnection();
-    const lspClient = new LspClientImpl(connection);
-    const logger = new LspClientLogger(lspClient, options.showMessageLevel);
-    const server: LspServer = new LspServer({
-        logger,
-        lspClient
-    });
+	const connection = lsp.createConnection();
+	const lspClient = new LspClientImpl(connection);
+	const logger = new LspClientLogger(lspClient, options.showMessageLevel);
+	const server: LspServer = new LspServer({
+		logger,
+		lspClient
+	});
 
-    connection.onInitialize(server.initialize.bind(server));
-    connection.onInitialized(() => activate(lspClient, server, logger))
-    connection.onDidOpenTextDocument(server.didOpenTextDocument.bind(server));
-    connection.onDidSaveTextDocument(server.didSaveTextDocument.bind(server));
-    connection.onDidCloseTextDocument(server.didCloseTextDocument.bind(server));
-    connection.onDidChangeTextDocument(server.didChangeTextDocument.bind(server));
+	connection.onInitialize(server.initialize.bind(server));
+	connection.onInitialized(() => activate(lspClient, server, logger));
+	connection.onDidOpenTextDocument(server.didOpenTextDocument.bind(server));
+	connection.onDidSaveTextDocument(server.didSaveTextDocument.bind(server));
+	connection.onDidCloseTextDocument(server.didCloseTextDocument.bind(server));
+	connection.onDidChangeTextDocument(server.didChangeTextDocument.bind(server));
 
-    connection.onCodeAction(server.codeAction.bind(server));
-    connection.onCodeLens(server.codeLens.bind(server));
-    connection.onCodeLensResolve(server.codeLensResolve.bind(server));
-    connection.onCompletion(server.completion.bind(server));
-    connection.onDefinition(server.definition.bind(server));
-    connection.onDocumentFormatting(server.documentFormatting.bind(server));
-    connection.onDocumentHighlight(server.documentHighlight.bind(server));
-    connection.onDocumentSymbol(server.documentSymbol.bind(server));
-    connection.onExecuteCommand(server.executeCommand.bind(server));
-    connection.onHover(server.hover.bind(server));
-    connection.onReferences(server.references.bind(server));
-    connection.onRenameRequest(server.rename.bind(server));
-    connection.onSignatureHelp(server.signatureHelp.bind(server));
-    connection.onWorkspaceSymbol(server.workspaceSymbol.bind(server));
+	connection.onCodeAction(server.codeAction.bind(server));
+	connection.onCodeLens(server.codeLens.bind(server));
+	connection.onCodeLensResolve(server.codeLensResolve.bind(server));
+	connection.onCompletion(server.completion.bind(server));
+	connection.onDefinition(server.definition.bind(server));
+	connection.onDocumentFormatting(server.documentFormatting.bind(server));
+	connection.onDocumentHighlight(server.documentHighlight.bind(server));
+	connection.onDocumentSymbol(server.documentSymbol.bind(server));
+	connection.onExecuteCommand(server.executeCommand.bind(server));
+	connection.onHover(server.hover.bind(server));
+	connection.onReferences(server.references.bind(server));
+	connection.onRenameRequest(server.rename.bind(server));
+	connection.onSignatureHelp(server.signatureHelp.bind(server));
+	connection.onWorkspaceSymbol(server.workspaceSymbol.bind(server));
 
-    return connection;
+	return connection;
 }

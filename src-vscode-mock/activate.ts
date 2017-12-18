@@ -1,7 +1,7 @@
 import { outputChannel } from '../src/goStatus';
 import { GoImplementationProvider } from '../src/goImplementations';
 import { installCurrentPackage } from '../src/goInstall';
-import { commands } from './commands'
+import { commands } from './commands';
 import { addImport } from '../src/goImport';
 import { LspClient } from './lsp-client';
 import { LspServer } from './lsp-server';
@@ -16,20 +16,20 @@ import { addTags, removeTags } from '../src/goModifytags';
 import { playgroundCommand } from '../src/goPlayground';
 import { CommandConfig } from './config';
 import { buildCode } from '../src/goBuild';
-import { MessageType, workspace } from './vscode'
+import { MessageType, workspace } from './vscode';
 import { updateGoPathGoRootFromConfig, offerToInstallTools } from '../src/goInstallTools';
 import { getCurrentGoPath } from '../src/util';
 
 export function activate(lspClient: LspClient, lspServer: LspServer, logger: Logger) {
-	outputChannel.lspClient = lspClient
-	window.lspClient = lspClient
+	outputChannel.lspClient = lspClient;
+	window.lspClient = lspClient;
 
-	console.log = logger.log.bind(logger)
-	console.error = logger.error.bind(logger)
-	console.warn = logger.warn.bind(logger)
-	console.info = logger.info.bind(logger)
-	
-	updateGoPathGoRootFromConfig()
+	console.log = logger.log.bind(logger);
+	console.error = logger.error.bind(logger);
+	console.warn = logger.warn.bind(logger);
+	console.info = logger.info.bind(logger);
+
+	updateGoPathGoRootFromConfig();
 	// .then(() => {
 	// 	const updateToolsCmdText = 'Update tools';
 	// 	const prevGoroot = ctx.globalState.get('goroot');
@@ -91,10 +91,10 @@ export function activate(lspClient: LspClient, lspServer: LspServer, logger: Log
 
 	// }));
 
-	errorDiagnosticCollection.onSet(lspClient.publishDiagnostics.bind(lspClient))
-	warningDiagnosticCollection.onSet(lspClient.publishDiagnostics.bind(lspClient))
+	errorDiagnosticCollection.onSet(lspClient.publishDiagnostics.bind(lspClient));
+	warningDiagnosticCollection.onSet(lspClient.publishDiagnostics.bind(lspClient));
 
-	commands.lspClient = lspClient
+	commands.lspClient = lspClient;
 
 	commands.registerCommand('go.gopath', () => {
 		let gopath = getCurrentGoPath();
@@ -116,7 +116,7 @@ export function activate(lspClient: LspClient, lspServer: LspServer, logger: Log
 
 	commands.registerCommand('go.import.add', (arg: string) => {
 		return addImport(typeof arg === 'string' ? arg : null);
-	})
+	});
 
 	commands.registerCommand('go.install.package', installCurrentPackage);
 
@@ -139,7 +139,7 @@ export function activate(lspClient: LspClient, lspServer: LspServer, logger: Log
 	// 'go.toggle.test.file': missing command 'open.file'
 
 	commands.registerCommand('go.get.package', goGetPackage);
-	
+
 	commands.registerCommand('go.add.tags', (args) => {
 		addTags(args);
 	});
@@ -147,22 +147,22 @@ export function activate(lspClient: LspClient, lspServer: LspServer, logger: Log
 		removeTags(args);
 	});
 
-	commands.registerCommand('go.playground', playgroundCommand)
+	commands.registerCommand('go.playground', playgroundCommand);
 
 	commands.registerCommand('go.show.commands', () => {
-		const commandTitles: string[] = []
-		const title2commandId = new Map<string, string>()
+		const commandTitles: string[] = [];
+		const title2commandId = new Map<string, string>();
 		for (let key of commands.commandMap.keys()) {
-			const title = CommandConfig.instance.getTitle(key)
+			const title = CommandConfig.instance.getTitle(key);
 			if (title) {
-				title2commandId.set(title, key)
-				commandTitles.push(title)
+				title2commandId.set(title, key);
+				commandTitles.push(title);
 			}
 		}
 		window.showQuickPick(commandTitles).then(pick => {
-			const command = title2commandId.get(pick)
-			commands.executeCommand(command)
-		})
+			const command = title2commandId.get(pick);
+			commands.executeCommand(command);
+		});
 	});
 
 	commands.registerCommand('go.build.package', buildCode);
@@ -173,12 +173,12 @@ export function activate(lspClient: LspClient, lspServer: LspServer, logger: Log
 		lspClient.logMessage({
 			message: 'workbench.action.openGlobalSettings is called',
 			type: MessageType.Warning
-		})
-	})
+		});
+	});
 	commands.registerCommand('workbench.action.openWorkspaceSettings', () => {
 		lspClient.logMessage({
 			message: 'workbench.action.openWorkspaceSettings is called',
 			type: MessageType.Warning
-		})
-	})
+		});
+	});
 }
