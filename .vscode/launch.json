@@ -3,6 +3,22 @@
 	"configurations": [
 		{
 			"type": "node",
+			"request": "launch",
+			"name": "Mocha Tests",
+			"program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+			"args": [
+				"--timeout",
+				"999999",
+				"--colors",
+				"--reporter",
+				"spec",
+				"./out/**/*.spec.js"
+			],
+			"internalConsoleOptions": "openOnSessionStart",
+			"runtimeExecutable": "/Users/koehnlein/.nvm/versions/node/v8.8.1/bin/node"
+		},
+		{
+			"type": "node",
 			"request": "attach",
 			"name": "Attach",
 			"port": 9229

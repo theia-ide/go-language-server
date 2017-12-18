@@ -194,6 +194,15 @@ export function activate(lspClient: LspClient, lspServer: LspServer, logger: Log
 			type: MessageType.Warning
 		});
 	});
+	_activated();
+}
+
+export function mockActivate(lspClient: LspClient) {
+	window.lspClient = lspClient;
+	commands.lspClient = lspClient;
+
+	errorDiagnosticCollection.onSet(lspClient.publishDiagnostics.bind(lspClient));
+	warningDiagnosticCollection.onSet(lspClient.publishDiagnostics.bind(lspClient));
 
 	_activated();
 }
