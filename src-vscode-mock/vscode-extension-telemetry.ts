@@ -1,10 +1,10 @@
-import { window } from "./window";
+import { window } from './window';
 
 export default class TelemetryReporter {
-	constructor(...any: any[]) {
+	constructor(...args: any[]) {
 	}
 
-	sendTelemetryEvent(...any: any[]) {
-		window.lspClient.sendTelemetryEvent(any)
+	sendTelemetryEvent(...args: any[]) {
+		window.lspClient.sendTelemetryEvent(args);
 	}
 }

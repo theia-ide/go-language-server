@@ -1,16 +1,16 @@
 import { TextDocument } from './text-document';
 import { uriToStringUri } from './utils';
 import { ForkOptions } from 'child_process';
-import { window } from './window'
+import { window } from './window';
 import * as lsp from 'vscode-languageserver';
-import URI from 'vscode-uri'
+import URI from 'vscode-uri';
 
 export interface CodeActionContext extends lsp.CodeActionContext { }
 
 export class CodeLens implements lsp.CodeLens {
-	data?: any
+	data?: any;
 
-	document?: TextDocument
+	document?: TextDocument;
 
 	constructor(public range: lsp.Range, public command?: Command) {
 	}
@@ -37,13 +37,13 @@ export class CompletionItem implements lsp.CompletionItem {
 export type Definition = Location | Location[] | null;
 
 export interface DocumentFilter {
-	language: string
-	scheme: string
+	language: string;
+	scheme: string;
 }
 
 export class ExtensionContext {
-	subscriptions: any[] = []
-	globalState: GlobalState
+	subscriptions: any[] = [];
+	globalState: GlobalState;
 }
 
 export class FormattingOptions { }
@@ -51,11 +51,11 @@ export class FormattingOptions { }
 export class GlobalState {
 
 	get<T>(key: string, defaultValue?: T): T | undefined {
-		return undefined
+		return undefined;
 	}
 
 	update(key: string, value: any): Thenable<void> {
-		return undefined
+		return undefined;
 	}
 }
 
@@ -69,27 +69,27 @@ export namespace InsertTextFormat {
 }
 
 export class Location implements lsp.Location {
-	uri: string
-	range: lsp.Range
+	uri: string;
+	range: lsp.Range;
 
 	constructor(range: lsp.Range, uri: string)
 	constructor(uri: URI, range: lsp.Range)
 	constructor(uri: URI, position: lsp.Position)
 	constructor(public readonly rangeOrUri: lsp.Range | URI, public readonly uriRangeOrPosition: string | lsp.Range | lsp.Position) {
 		if (lsp.Range.is(rangeOrUri))
-			this.range = rangeOrUri
+			this.range = rangeOrUri;
 		else
-			this.uri = uriToStringUri(rangeOrUri)
+			this.uri = uriToStringUri(rangeOrUri);
 		if (lsp.Range.is(uriRangeOrPosition))
-			this.range = uriRangeOrPosition
+			this.range = uriRangeOrPosition;
 		else if (lsp.Position.is(uriRangeOrPosition))
-			this.range = new Range(uriRangeOrPosition, uriRangeOrPosition)
+			this.range = new Range(uriRangeOrPosition, uriRangeOrPosition);
 		else
-			this.uri = uriRangeOrPosition
+			this.uri = uriRangeOrPosition;
 	}
 }
 
-export type MarkedString = lsp.MarkedString
+export type MarkedString = lsp.MarkedString;
 
 export class ParameterInformation implements lsp.ParameterInformation {
 	constructor(public readonly label: string, public readonly documentation?: string) { }
@@ -102,8 +102,8 @@ export class Position implements lsp.Position {
 export type ProviderResult<T> = T | undefined | null | Thenable<T | undefined | null>;
 
 export class Range implements lsp.Range {
-	readonly start: lsp.Position
-	readonly end: lsp.Position
+	readonly start: lsp.Position;
+	readonly end: lsp.Position;
 
 	constructor(range: lsp.Range)
 	constructor(start: lsp.Position, end: lsp.Position)
@@ -111,37 +111,37 @@ export class Range implements lsp.Range {
 	constructor(first: lsp.Position | number | lsp.Range, second?: lsp.Position | number,
 		endLine: number = -1, endCharacter: number = -1) {
 		if (lsp.Range.is(first)) {
-			this.start = first.start
-			this.end = first.end
+			this.start = first.start;
+			this.end = first.end;
 		} else if (lsp.Position.is(first) && lsp.Position.is(second)) {
-			this.start = first as Position
-			this.end = second as Position
+			this.start = first as Position;
+			this.end = second as Position;
 		} else {
-			this.start = new Position(first as number, second as number)
-			this.end = new Position(endLine, endCharacter)
+			this.start = new Position(first as number, second as number);
+			this.end = new Position(endLine, endCharacter);
 		}
 	}
 
 	static contains(range: lsp.Range, position: lsp.Position): boolean {
 		return (range.start.line < position.line
-			|| (range.start.line == position.line && range.start.character <= position.character))
+			|| (range.start.line === position.line && range.start.character <= position.character))
 			&& (range.end.line > position.line
-				|| (range.end.line == position.line && range.end.character >= position.character))
+				|| (range.end.line === position.line && range.end.character >= position.character));
 	}
 
 	isEmpty(): boolean {
 		return this.start.line === this.end.line
-			&& this.start.character === this.end.character
+			&& this.start.character === this.end.character;
 	}
 }
 
 export class Selection extends Range {
 	constructor(range: Range) {
-		super(range)
+		super(range);
 	}
 
 	get active(): lsp.Position {
-		return this.start
+		return this.start;
 	}
 }
 
@@ -175,8 +175,8 @@ export enum StatusBarAlignment {
 }
 
 export class SymbolInformation implements lsp.SymbolInformation {
-	uri: string
-	location: lsp.Location | undefined
+	uri: string;
+	location: lsp.Location | undefined;
 
 	constructor(public readonly name: string,
 		public readonly kind: lsp.SymbolKind,
@@ -184,9 +184,9 @@ export class SymbolInformation implements lsp.SymbolInformation {
 		uri: URI | undefined,
 		public readonly containerName?: string) {
 		if (uri)
-			this.location = new Location(range, uriToStringUri(uri))
-		else 
-			this.location = new Location(range, uriToStringUri(window.activeTextEditor.document.uri))
+			this.location = new Location(range, uriToStringUri(uri));
+		else
+			this.location = new Location(range, uriToStringUri(window.activeTextEditor.document.uri));
 	}
 }
 
@@ -194,15 +194,15 @@ export class TextEdit implements lsp.TextEdit {
 	constructor(public readonly range: lsp.Range, public readonly newText: string) { }
 
 	static insert(position: Position, text: string) {
-		return new TextEdit(new Range(position, position), text)
+		return new TextEdit(new Range(position, position), text);
 	}
 
 	static delete(range: Range) {
-		return new TextEdit(range, '')
+		return new TextEdit(range, '');
 	}
 
 	static replace(range: Range, text: string) {
-		return new TextEdit(range, text)
+		return new TextEdit(range, text);
 	}
 }
 
@@ -210,30 +210,30 @@ export class TextEdit implements lsp.TextEdit {
 export class WorkspaceEdit implements lsp.WorkspaceEdit {
 	changes: {
 		[uri: string]: TextEdit[];
-	} = {}
+	} = {};
 
 	set(uri: URI, edits: TextEdit[]) {
-		this.changes[uriToStringUri(uri)] = edits
+		this.changes[uriToStringUri(uri)] = edits;
 	}
 
 	add(uri: URI, edit: TextEdit) {
-		const existing = this.changes[uriToStringUri(uri)]
+		const existing = this.changes[uriToStringUri(uri)];
 		if (existing)
-			existing.push(edit)
+			existing.push(edit);
 		else
-			this.set(uri, [edit])
+			this.set(uri, [edit]);
 	}
 
 	insert(uri: URI, position: Position, text: string) {
-		this.add(uri, new TextEdit(new Range(position, position), text))
+		this.add(uri, new TextEdit(new Range(position, position), text));
 	}
 
 	delete(uri: URI, range: Range) {
-		this.add(uri, new TextEdit(range, ''))
+		this.add(uri, new TextEdit(range, ''));
 	}
 
 	replace(uri: URI, range: Range, text: string) {
-		this.add(uri, new TextEdit(range, text))
+		this.add(uri, new TextEdit(range, text));
 	}
 
 }

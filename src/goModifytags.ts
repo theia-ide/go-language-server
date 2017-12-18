@@ -110,7 +110,7 @@ function getTagsAndOptions(config: GoTagsConfig, commandArgs: GoTagsConfig): The
 		return Promise.resolve([tags, options, transformValue]);
 	// [TypeFox]
 	// }
-	
+
 	// return vscode.window.showInputBox({
 	// 	value: 'json',
 	// 	prompt: 'Enter comma separated tag names'

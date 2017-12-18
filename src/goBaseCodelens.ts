@@ -14,7 +14,7 @@ export abstract class GoBaseCodeLensProvider implements vscode.CodeLensProvider 
 		if (this.enabled !== enabled) {
 			this.enabled = enabled;
 			// [TypeFox]
-			//this.onDidChangeCodeLensesEmitter.fire();
+			// this.onDidChangeCodeLensesEmitter.fire();
 			this.onDidChangeCodeLensesEmitter.fire(undefined);
 		}
 	}

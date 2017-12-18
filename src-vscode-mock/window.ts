@@ -1,7 +1,7 @@
 import { LspClient } from './lsp-client';
 import { StatusBarAlignment, StatusBarItem } from './types';
-import { TextEditor } from './text-editor'
-import { Thenable } from './thenable'
+import { TextEditor } from './text-editor';
+import { Thenable } from './thenable';
 import { Event } from 'vscode-jsonrpc';
 import * as lsp from 'vscode-languageserver';
 import { isString } from 'util';
@@ -10,64 +10,64 @@ import { MessageActionItem } from 'vscode-languageserver';
 class Window {
 	activeTextEditor: TextEditor | undefined;
 
-	visibleTextEditors: TextEditor[] = []
+	visibleTextEditors: TextEditor[] = [];
 
-	lspClient: LspClient
-	
+	lspClient: LspClient;
+
 	createOutputChannel(name: string): OutputChannel {
-		return new OutputChannel(name)
+		return new OutputChannel(name);
 	}
 
 	createStatusBarItem(alignment: StatusBarAlignment, priority: number) {
-		return new StatusBarItem(alignment, priority)
+		return new StatusBarItem(alignment, priority);
 	}
 
-	onDidChangeActiveTextEditor: Event<TextEditor>
+	onDidChangeActiveTextEditor: Event<TextEditor>;
 
 	showInformationMessage<T>(message: string, ...items: T[]): Thenable<T | undefined> {
 		if (items) {
-			const choices = items.map(item => typeof item === 'string' ? item as string : (item as any).title)
+			const choices = items.map(item => typeof item === 'string' ? item as string : (item as any).title);
 			return this.lspClient.showInformationMessage(message, ...choices).then(selection =>  {
-				return items.find(item => item as any === selection || (item as any).title === selection) as T
-			})
+				return items.find(item => item as any === selection || (item as any).title === selection) as T;
+			});
 		} else {
-			return this.lspClient.showInformationMessage(message).then(result => undefined)
+			return this.lspClient.showInformationMessage(message).then(result => undefined);
 		}
 	}
 
 	showQuickPick(items: string[] /*| Thenable<string[]>/*, options?: QuickPickOptions, token?: CancellationToken*/): Thenable<string | undefined> {
 		return this.lspClient.showInformationMessage('', ...items).then(selection => {
-			return items.find(item => item === selection)
-		})
+			return items.find(item => item === selection);
+		});
 	}
 
 	showErrorMessage(message: string) {
 		this.lspClient.showMessage({
 			message: message,
 			type: lsp.MessageType.Error
-		})
+		});
 	}
 }
 
-export const window = new Window()
+export const window = new Window();
 
 export class OutputChannel {
-	
-	lspClient: LspClient
-	
+
+	lspClient: LspClient;
+
 	constructor(readonly name: string) {}
 
 	append(value: string): void {
-		if(this.lspClient) {
+		if (this.lspClient) {
 			this.lspClient.logMessage({
 				message: value,
 				type: lsp.MessageType.Info
-			})
+			});
 		}
 	}
 
 	appendLine(value: string): void {
-		this.append(value)
+		this.append(value);
 	}
 
 	clear(): void {

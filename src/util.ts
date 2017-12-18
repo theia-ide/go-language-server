@@ -16,7 +16,7 @@ import { errorDiagnosticCollection, warningDiagnosticCollection } from './goMain
 const extensionId: string = 'lukehoban.Go';
 // [TypeFox]
 // const extensionVersion: string = vscode.extensions.getExtension(extensionId).packageJSON.version;
-const extensionVersion = '0.1.0'
+const extensionVersion = '0.1.0';
 const aiKey: string = 'AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217';
 
 export const goKeywords: string[] = [

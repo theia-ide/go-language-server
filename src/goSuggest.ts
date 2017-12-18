@@ -67,7 +67,7 @@ export class GoCompletionItemProvider implements vscode.CompletionItemProvider {
 					let word = document.getText(wordAtPosition);
 					currentWord = word.substr(0, position.character - wordAtPosition.start.character);
 				}
-				
+
 				if (currentWord.match(/^\d+$/)) {
 					return resolve([]);
 				}
@@ -184,7 +184,7 @@ export class GoCompletionItemProvider implements vscode.CompletionItemProvider {
 								// [TypeFox]
 								// item.insertText = new vscode.SnippetString(suggest.name + '(' + paramSnippets.join(', ') + ')');
 								item.insertText = suggest.name + '(' + paramSnippets.join(', ') + ')';
-								item.insertTextFormat = vscode.InsertTextFormat.Snippet
+								item.insertTextFormat = vscode.InsertTextFormat.Snippet;
 							}
 
 							// Add same sortText to all suggestions from gocode so that they appear before the unimported packages
