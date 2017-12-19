@@ -11,8 +11,6 @@ import { TextEditor } from './text-editor';
 import { Thenable } from './thenable';
 import { Event } from 'vscode-jsonrpc';
 import * as lsp from 'vscode-languageserver';
-import { isString } from 'util';
-import { MessageActionItem } from 'vscode-languageserver';
 
 class Window {
 	activeTextEditor: TextEditor | undefined;

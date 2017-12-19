@@ -7,7 +7,6 @@
 
 import * as path from 'path';
 import * as fs from 'fs';
-import * as lsp from 'vscode-languageserver';
 import { pathToUri } from './utils';
 
 export function uri(

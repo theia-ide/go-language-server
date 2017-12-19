@@ -7,7 +7,6 @@
 
 import { TextDocument } from './text-document';
 import { uriToStringUri } from './utils';
-import { ForkOptions } from 'child_process';
 import { window } from './window';
 import * as lsp from 'vscode-languageserver';
 import URI from 'vscode-uri';

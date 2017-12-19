@@ -6,10 +6,6 @@
  */
 
 import * as lsp from 'vscode-languageserver';
-import { errorDiagnosticCollection, warningDiagnosticCollection } from '../src/goMain';
-import { DiagnosticCollection } from './diagnostics';
-import { window } from './window';
-import { execFileSync } from 'child_process';
 
 export interface LspClient {
 	registerCapability(params: lsp.RegistrationParams): Promise<void>;

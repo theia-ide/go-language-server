@@ -6,7 +6,6 @@
  */
 
 import { outputChannel } from '../src/goStatus';
-import { GoImplementationProvider } from '../src/goImplementations';
 import { installCurrentPackage } from '../src/goInstall';
 import { commands } from './commands';
 import { addImport } from '../src/goImport';

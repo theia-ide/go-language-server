@@ -8,7 +8,7 @@
 import { uriToStringUri } from './utils';
 import * as lsp from 'vscode-languageserver';
 import URI from 'vscode-uri';
-import { Event, Emitter } from 'vscode-jsonrpc';
+import { Emitter } from 'vscode-jsonrpc';
 
 export class Diagnostic implements lsp.Diagnostic {
 	constructor(public readonly range: lsp.Range, public readonly message: string, public readonly severity: lsp.DiagnosticSeverity) { }
