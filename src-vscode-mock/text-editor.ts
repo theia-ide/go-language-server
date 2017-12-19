@@ -5,7 +5,6 @@
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  */
 
-import { workspace } from './workspace';
 import { LspClient } from './lsp-client';
 import { TextDocument } from './text-document';
 import { Position, Selection, Range, WorkspaceEdit } from './types';

@@ -39,7 +39,7 @@ export class GoReferencesCodeLensProvider extends GoBaseCodeLensProvider {
 					let funcDecl = document.lineAt(position.line).text.substr(position.character);
 					let match = methodRegex.exec(funcDecl);
 					// [TypeFox]
-					//position = position.translate(0, match ? match[0].length : 5);
+					// position = position.translate(0, match ? match[0].length : 5);
 					position = new vscode.Position(position.line, position.character + (match ? match[0].length : 5));
 				}
 				return new ReferencesCodeLens(document, symbol, new vscode.Range(position, position));
@@ -64,8 +64,8 @@ export class GoReferencesCodeLensProvider extends GoBaseCodeLensProvider {
 					? '1 reference'
 					: references.length + ' references',
 				// [TypeFox]
-				//command: 'editor.action.showReferences',
-				//arguments: [codeLens.document.uri, codeLens.range.start, references]
+				// command: 'editor.action.showReferences',
+				// arguments: [codeLens.document.uri, codeLens.range.start, references]
 				command: 'go.editor.action.showReferences',
 				arguments: [uriToStringUri(codeLens.document.uri), codeLens.range.start, references]
 			};

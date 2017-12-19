@@ -7,19 +7,17 @@
 
 import * as chai from 'chai';
 import * as path from 'path';
-import * as fs from 'fs';
 import * as lsp from 'vscode-languageserver';
 import { isArray } from 'util';
 import { LspServer } from './lsp-server';
 import { testFilePath, testWorkspacePath, uri, writeContents } from './test-utils';
-import { LspClient, LspClientImpl } from './lsp-client';
+import { LspClient } from './lsp-client';
 import { ConsoleLogger } from './logger';
-import { Deferred, uriToPath } from './utils';
+import { uriToPath } from './utils';
 import { TextDocument } from './text-document';
-import { getImportablePackages, isAllowToImportPackage } from '../src/goPackages';
-import { Range, window, CommandRegistry, commands, workspace, applyEdits } from './vscode';
-import { activate, mockActivate } from './activate';
-import { DefaultConfig } from './config';
+import { getImportablePackages } from '../src/goPackages';
+import { workspace, applyEdits } from './vscode';
+import { mockActivate } from './activate';
 import { homedir } from 'os';
 import { buildCode } from '../src/goBuild';
 
@@ -290,7 +288,7 @@ describe('hover', () => {
 // 	it('simple test', async () => {
 // 		const doc = openNewDocument('main.go', `
 // 			package test
-			
+//
 // 			func foo(x string) string {
 // 				return foo("");
 // 			}

@@ -6,8 +6,6 @@
  */
 
 import * as lsp from 'vscode-languageserver';
-import * as fs from 'fs';
-import * as cp from 'child_process';
 import Uri  from 'vscode-uri';
 
 import { Logger, PrefixingLogger } from './logger';
@@ -119,7 +117,6 @@ export class LspServer {
 		window.activeTextEditor = editor;
 
 		// doBuild requires an active editor so we start the initial build this late
-		const hadBuild = this.hasStartedInitialBuild;
 		this.hasStartedInitialBuild = true;
 		buildCode(false);
 	}
@@ -258,10 +255,6 @@ export class LspServer {
 		this.logger.log('documentHighlight', arg);
 		// TODO
 		return [];
-	}
-
-	private rootPath(): string {
-		return this.initializeParams.rootUri ? uriToPath(this.initializeParams.rootUri) : this.initializeParams.rootPath!;
 	}
 
 	public async workspaceSymbol(params: lsp.WorkspaceSymbolParams): Promise<lsp.SymbolInformation[]> {
