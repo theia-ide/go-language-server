@@ -34,6 +34,7 @@ import { GoSignatureHelpProvider } from '../src/goSignature';
 import { GoWorkspaceSymbolProvider } from '../src/goSymbol';
 import { Selection } from './vscode';
 import { activate } from './activate';
+import { TextDocumentIdentifier } from 'vscode-languageserver';
 
 export interface IServerOptions {
 	logger: Logger;
@@ -254,13 +255,17 @@ export class LspServer {
 		return this.executeOnDocument('codeLens', params, async document => {
 			const referenceCodeLenses = await this.referenceCodeLensProvider.provideCodeLenses(document, lsp.CancellationToken.None);
 			const testCodeLenses = await this.testCodeLensProvider.provideCodeLenses(document, lsp.CancellationToken.None);
-			return referenceCodeLenses.concat(testCodeLenses);
+			const allCodeLenses = referenceCodeLenses.concat(testCodeLenses);
+			allCodeLenses.forEach(codeLens => codeLens.data = {
+				textDocument: params.textDocument
+			});
+			return allCodeLenses;
 		});
 	}
 
 	public async codeLensResolve(codeLens: CodeLens): Promise<CodeLens> {
 		await this.activation;
-		codeLens.document = window.activeTextEditor.document;
+		codeLens.document = this.getOpenDocument((codeLens.data.textDocument as TextDocumentIdentifier).uri)
 		return this.referenceCodeLensProvider.resolveCodeLens(codeLens, lsp.CancellationToken.None);
 	}
 
