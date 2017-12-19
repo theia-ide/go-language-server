@@ -123,7 +123,7 @@ export class LspServer {
 			this.referenceProvider = new GoReferenceProvider();
 			this.referenceCodeLensProvider = new GoReferencesCodeLensProvider();
 			this.signatureHelpProvider = new GoSignatureHelpProvider();
-			this.snippetProposalProvider = new SnippetProposalProvider();
+			this.snippetProposalProvider = new SnippetProposalProvider(this.logger);
 			this.testCodeLensProvider = new GoRunTestCodeLensProvider();
 			this.workspaceSymbolProvider = new GoWorkspaceSymbolProvider();
 			this.activated();

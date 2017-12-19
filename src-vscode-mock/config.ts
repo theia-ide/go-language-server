@@ -5,7 +5,7 @@
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  */
 
-import { readFile } from 'fs-extra';
+import { readFile, readFileSync } from 'fs-extra';
 import { workspace, WorkspaceFolder } from './vscode';
 import Uri from 'vscode-uri';
 import { uriToStringUri } from './utils';
@@ -21,14 +21,16 @@ export class FileBasedConfig {
 	readonly [key: string]: any;
 
 	constructor(path: string) {
-		readFile(path, 'UTF-8', (err: any, data: string) => {
-			if (!err) {
-				const elements = JSON.parse(data);
-				for (let key of elements) {
-					(this as any)[key] = elements[key];
-				}
+		try {
+			const data = readFileSync(path, 'UTF-8');
+			const elements = JSON.parse(data);
+			for (let key in elements) {
+				(this as any)[key] = elements[key];
 			}
-		});
+		} catch (err) {
+			console.log(err);
+			// file read error
+		}
 	}
 }
 
