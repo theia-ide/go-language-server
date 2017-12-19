@@ -5,15 +5,34 @@
  * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
  */
 
-import { homedir } from 'os';
-import * as lsp from 'vscode-languageserver';
-import * as path from 'path';
+import { readFile } from 'fs-extra';
+import { workspace, WorkspaceFolder } from './vscode';
+import Uri from 'vscode-uri';
+import { uriToStringUri } from './utils';
+import { resolvePath } from '../src/util';
 
-const pkginfo = require('pkginfo')(module);
+require('pkginfo')(module);
 
-export class DefaultConfig {
+export type Config = {
+	readonly [key: string]: any
+};
 
+export class FileBasedConfig {
 	readonly [key: string]: any;
+
+	constructor(path: string) {
+		readFile(path, 'UTF-8', (err: any, data: string) => {
+			if (!err) {
+				const elements = JSON.parse(data);
+				for (let key of elements) {
+					(this as any)[key] = elements[key];
+				}
+			}
+		});
+	}
+}
+
+export class DefaultConfig implements Config {
 
 	private constructor() {
 		const config = module.exports.contributes.configuration.properties;
@@ -41,7 +60,7 @@ export class CommandConfig {
 
 	private constructor() {
 		const commands = module.exports.contributes.commands;
-		for (let command of commands) {
+		for (let command of commands)  {
 			this.map.set(command.command, command.title);
 		}
 	}

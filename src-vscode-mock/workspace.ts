@@ -7,22 +7,19 @@
 
 import { WorkspaceEdit } from './types';
 import Uri from 'vscode-uri';
-import { Event } from 'vscode-jsonrpc';
 import { TextDocument } from './text-document';
-import { DefaultConfig } from './config';
 import { uriToStringUri } from './utils';
 import { LspClient } from './lsp-client';
+import { Config, DefaultConfig, FileBasedConfig } from './config';
+import * as os from 'os';
+import * as path from 'path';
 
-// TODO implement scopes default / global / workspace / workspace folder
-export class WorkspaceConfiguration {
+export class WorkspaceConfiguration implements Config {
 
-	private workspaceValues = new Map<string, any>();
-
-	readonly [key: string]: any;
-
-	constructor() {
-		for (let k in DefaultConfig.instance) 
-			(this as any)[k] = DefaultConfig.instance.get(k);
+	constructor(private defaultValues: Config, private globalValues: Config, private workspaceValues: Config, private workspaceFolderValues: Config) {
+		const mergedValues = { ...defaultValues, ...globalValues, ...workspaceValues, ...workspaceFolderValues };
+		for (let key in mergedValues)
+			(this as any)[key] = mergedValues[key];
 	}
 
 	get<T>(section: string): T | undefined {
@@ -30,14 +27,63 @@ export class WorkspaceConfiguration {
 	}
 
 	inspect<T>(section: string): { key: string; defaultValue?: T; globalValue?: T; workspaceValue?: T, workspaceFolderValue?: T } | undefined {
-		const value: T = this.workspaceValues.get(section);
-		const defaultValue: T = DefaultConfig.instance.get(section);
-		if (value ||  defaultValue) {
+		const value: T = this.get(section);
+		if (value) {
 			return {
 				key: section,
-				defaultValue: defaultValue,
-				workspaceValue: value
+				defaultValue: this.defaultValues.get(section),
+				globalValue: this.globalValues.get(section),
+				workspaceValue: this.workspaceValues.get(section),
+				workspaceFolderValue: this.workspaceFolderValues.get(section)
 			};
+		}
+	}
+}
+
+export class WorkspacConfigurationProvider {
+
+	private defaultConfig = DefaultConfig.instance;
+	private folder2config = new Map<WorkspaceFolder, WorkspaceConfiguration>();
+	private path2config = new Map<string, Config>();
+
+	get(section: string, uri: Uri): WorkspaceConfiguration {
+		if (uri) {
+			const workspaceFolder = workspace.getWorkspaceFolder(uri);
+			if (workspaceFolder) {
+				const config = this.folder2config.get(workspaceFolder);
+				if (config) 
+					return config;
+				const workspaceConfiguration = new WorkspaceConfiguration(
+					this.defaultConfig,
+					this.getConfig(os.homedir()),
+					this.getConfig(workspace.rootPath),
+					this.getConfig(uriToStringUri(workspaceFolder.uri)));
+				this.folder2config.set(workspaceFolder, workspaceConfiguration);
+				return workspaceConfiguration;
+			}
+		}
+		return new WorkspaceConfiguration(
+			this.defaultConfig,
+			this.getConfig(os.homedir()),
+			this.getConfig(workspace.rootPath),
+			{});
+	}
+
+	public isConfigFile(uri: Uri): boolean {
+		return this.path2config.get(uri.fsPath) !== undefined;
+	}
+
+	private getConfig(folder: string) {
+		if (!folder)
+			return {};
+		const configPath = path.resolve(folder, 'go.json');
+		const cached = this.path2config.get(configPath);
+		if (!cached) {
+			const config = new FileBasedConfig(configPath);
+			this.path2config.set(configPath, config);
+			return config;
+		} else {
+			return cached;
 		}
 	}
 }
@@ -48,18 +94,14 @@ export class WorkspaceFolder {
 
 class Workspace {
 
+	workspaceConfigurationProvider = new WorkspacConfigurationProvider();
+
 	workspaceFolders: WorkspaceFolder[] = [];
 	rootPath: string | undefined;
 	lspClient: LspClient;
 
-	onDidChangeTextDocument: Event<TextDocument>;
-	onDidSaveTextDocument: Event<TextDocument>;
-
-	private defaultWorkspaceConfiguration = new WorkspaceConfiguration();
-
 	getConfiguration(section?: string, resource?: Uri): WorkspaceConfiguration {
-		// TODO implement scopes default / global / workspace / workspace folder
-		return this.defaultWorkspaceConfiguration;
+		return this.workspaceConfigurationProvider.get(section, resource);
 	}
 
 	getWorkspaceFolder(uri: Uri): WorkspaceFolder {
@@ -83,6 +125,3 @@ class Workspace {
 }
 
 export const workspace = new Workspace();
-
-
-
