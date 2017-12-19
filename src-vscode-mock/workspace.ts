@@ -54,7 +54,7 @@ export class WorkspacConfigurationProvider {
 				return config;
 			const workspaceConfiguration = new WorkspaceConfiguration(
 				this.defaultConfig,
-				this.getConfig(os.homedir()),
+				this.getConfig(path.join(os.homedir(), '.go')),
 				this.getConfig(workspace.rootPath),
 				this.getConfig(workspaceFolder.uri.fsPath));
 			this.folder2config.set(workspaceFolder, workspaceConfiguration);
@@ -62,7 +62,7 @@ export class WorkspacConfigurationProvider {
 		}
 		return new WorkspaceConfiguration(
 			this.defaultConfig,
-			this.getConfig(os.homedir()),
+			this.getConfig(path.join(os.homedir(), '.go')),
 			this.getConfig(workspace.rootPath),
 			{});
 	}
