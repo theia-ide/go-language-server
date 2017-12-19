@@ -46,27 +46,34 @@ export class WorkspacConfigurationProvider {
 	private folder2config = new Map<WorkspaceFolder, WorkspaceConfiguration>();
 	private path2config = new Map<string, Config>();
 
-	get(section: string, uri: Uri): WorkspaceConfiguration {
-		if (uri) {
-			const workspaceFolder = workspace.getWorkspaceFolder(uri);
-			if (workspaceFolder) {
-				const config = this.folder2config.get(workspaceFolder);
-				if (config) 
-					return config;
-				const workspaceConfiguration = new WorkspaceConfiguration(
-					this.defaultConfig,
-					this.getConfig(os.homedir()),
-					this.getConfig(workspace.rootPath),
-					this.getConfig(uriToStringUri(workspaceFolder.uri)));
-				this.folder2config.set(workspaceFolder, workspaceConfiguration);
-				return workspaceConfiguration;
-			}
+	get(section: string, uri: Uri| undefined): WorkspaceConfiguration {
+		const workspaceFolder = this.getWorkspaceFolder(uri);
+		if (workspaceFolder) {
+			const config = this.folder2config.get(workspaceFolder);
+			if (config) 
+				return config;
+			const workspaceConfiguration = new WorkspaceConfiguration(
+				this.defaultConfig,
+				this.getConfig(os.homedir()),
+				this.getConfig(workspace.rootPath),
+				this.getConfig(workspaceFolder.uri.fsPath));
+			this.folder2config.set(workspaceFolder, workspaceConfiguration);
+			return workspaceConfiguration;
 		}
 		return new WorkspaceConfiguration(
 			this.defaultConfig,
 			this.getConfig(os.homedir()),
 			this.getConfig(workspace.rootPath),
 			{});
+	}
+
+	private getWorkspaceFolder(uri: Uri | undefined) {
+		if (uri)
+			return workspace.getWorkspaceFolder(uri);
+		else if (workspace.workspaceFolders.length === 1)
+			return workspace.workspaceFolders[0];
+		else
+			return undefined;
 	}
 
 	public isConfigFile(uri: Uri): boolean {
@@ -76,7 +83,7 @@ export class WorkspacConfigurationProvider {
 	private getConfig(folder: string) {
 		if (!folder)
 			return {};
-		const configPath = path.resolve(folder, 'go.json');
+		const configPath = path.join(folder, 'go.json');
 		const cached = this.path2config.get(configPath);
 		if (!cached) {
 			const config = new FileBasedConfig(configPath);
@@ -109,7 +116,7 @@ class Workspace {
 		return this.workspaceFolders.find(f => {
 			const rawPath = uriToStringUri(f.uri);
 			const path = (rawPath.endsWith('/')) ? rawPath : rawPath + '/';
-			if (filePath.startsWith(path) ||  filePath === path) {
+			if (filePath.startsWith(path) ||  filePath === rawPath) {
 				return true;
 			}
 		});
