@@ -33,7 +33,7 @@ import { GoRenameProvider } from '../src/goRename';
 import { GoSignatureHelpProvider } from '../src/goSignature';
 import { GoWorkspaceSymbolProvider } from '../src/goSymbol';
 import { Selection } from './vscode';
-import { activated } from './activate';
+import { activate } from './activate';
 
 export interface IServerOptions {
 	logger: Logger;
@@ -47,24 +47,29 @@ export class LspServer {
 	private initializeParams: lsp.InitializeParams;
 	private initializeResult: lsp.InitializeResult;
 
-	private openedDocumentUris: Map<string, TextDocument> = new Map<string, TextDocument>();
+	private openedDocumentUris = new Map<string, TextDocument>();
 	private logger: Logger;
 
-	private codeActionProvider = new GoCodeActionProvider();
-	private completionItemProvider = new GoCompletionItemProvider();
-	private definitionProvider = new GoDefinitionProvider();
-	private documentSymbolProvider = new GoDocumentSymbolProvider();
-	private formattingProvider = new GoDocumentFormattingEditProvider();
-	private hoverProvider = new GoHoverProvider();
-	private renameProvider = new GoRenameProvider();
-	private referenceProvider = new GoReferenceProvider();
-	private referenceCodeLensProvider = new GoReferencesCodeLensProvider();
-	private signatureHelpProvider = new GoSignatureHelpProvider();
-	private snippetProposalProvider = new SnippetProposalProvider();
-	private testCodeLensProvider = new GoRunTestCodeLensProvider();
-	private workspaceSymbolProvider = new GoWorkspaceSymbolProvider();
+	private codeActionProvider: GoCodeActionProvider;
+	private completionItemProvider: GoCompletionItemProvider;
+	private definitionProvider: GoDefinitionProvider;
+	private documentSymbolProvider: GoDocumentSymbolProvider;
+	private formattingProvider: GoDocumentFormattingEditProvider;
+	private hoverProvider: GoHoverProvider;
+	private renameProvider: GoRenameProvider;
+	private referenceProvider: GoReferenceProvider;
+	private referenceCodeLensProvider: GoReferencesCodeLensProvider;
+	private signatureHelpProvider: GoSignatureHelpProvider;
+	private snippetProposalProvider: SnippetProposalProvider;
+	private testCodeLensProvider: GoRunTestCodeLensProvider;
+	private workspaceSymbolProvider: GoWorkspaceSymbolProvider;
 
 	private hasStartedInitialBuild = false;
+
+	private activated: () => void;
+	private activation = new Promise<void>((resolve, reject) => {
+		this.activated = resolve;
+	});
 
 	constructor(private options: IServerOptions) {
 		this.logger = new PrefixingLogger(options.logger, '[lspserver]');
@@ -101,13 +106,32 @@ export class LspServer {
 				workspaceSymbolProvider: true,
 			}
 		};
-
 		this.logger.log('onInitialize result', this.initializeResult);
 		return this.initializeResult;
 	}
 
+	public async initialized(params: lsp.InitializeParams): Promise<void> {
+		this.logger.log('initialized', params);
+		return activate(this.options.lspClient, this, this.logger).then(() => {
+			this.codeActionProvider = new GoCodeActionProvider();
+			this.completionItemProvider = new GoCompletionItemProvider();
+			this.definitionProvider = new GoDefinitionProvider();
+			this.documentSymbolProvider = new GoDocumentSymbolProvider();
+			this.formattingProvider = new GoDocumentFormattingEditProvider();
+			this.hoverProvider = new GoHoverProvider();
+			this.renameProvider = new GoRenameProvider();
+			this.referenceProvider = new GoReferenceProvider();
+			this.referenceCodeLensProvider = new GoReferencesCodeLensProvider();
+			this.signatureHelpProvider = new GoSignatureHelpProvider();
+			this.snippetProposalProvider = new SnippetProposalProvider();
+			this.testCodeLensProvider = new GoRunTestCodeLensProvider();
+			this.workspaceSymbolProvider = new GoWorkspaceSymbolProvider();
+			this.activated();
+		});
+	}
+
 	public async didOpenTextDocument(params: lsp.DidOpenTextDocumentParams): Promise<void> {
-		await activated;
+		await this.activation;
 		const path = uriToPath(params.textDocument.uri);
 		this.logger.log('onDidOpenTextDocument', params, path);
 		const document = new TextDocument(params.textDocument);
@@ -122,7 +146,7 @@ export class LspServer {
 	}
 
 	public async didCloseTextDocument(params: lsp.DidOpenTextDocumentParams): Promise<void> {
-		await activated;
+		await this.activation;
 		const path = uriToPath(params.textDocument.uri);
 		this.logger.log('onDidCloseTextDocument', params, path);
 		this.openedDocumentUris.delete(params.textDocument.uri);
@@ -137,21 +161,21 @@ export class LspServer {
 	}
 
 	public async didChangeTextDocument(params: lsp.DidChangeTextDocumentParams): Promise<void> {
-		await activated;
-		this.executeOnDocument('onDidCloseTextDocument', params, async document => {
+		await this.activation;
+		return this.executeOnDocument('onDidCloseTextDocument', params, async document => {
 			document.apply(params.contentChanges, params.textDocument.version);
 		});
 	}
 
 	public async didSaveTextDocument(params: lsp.DidChangeTextDocumentParams): Promise<void> {
-		await activated;
-		this.executeOnDocument('onDidSaveTextDocument', params, async document => {
+		await this.activation;
+		return this.executeOnDocument('onDidSaveTextDocument', params, async document => {
 			document.save();
 		}).then(() => buildCode(false));
 	}
 
 	public async definition(params: lsp.TextDocumentPositionParams): Promise<lsp.Definition> {
-		await activated;
+		await this.activation;
 		return this.executeOnDocument('definition', params, async document => {
 			const definition = await this.definitionProvider.provideDefinition(document, params.position, lsp.CancellationToken.None);
 			if (definition)
@@ -162,7 +186,7 @@ export class LspServer {
 	}
 
 	public async documentSymbol(params: lsp.DocumentSymbolParams): Promise<lsp.SymbolInformation[]> {
-		await activated;
+		await this.activation;
 		return this.executeOnDocument('symbol', params, async document => {
 			const symbolInformation = await this.documentSymbolProvider.provideDocumentSymbols(document, lsp.CancellationToken.None);
 			symbolInformation.forEach(symbol => {
@@ -173,7 +197,7 @@ export class LspServer {
 	}
 
 	public async completion(params: lsp.TextDocumentPositionParams): Promise<lsp.CompletionList> {
-		await activated;
+		await this.activation;
 		return this.executeOnDocument('completion', params, async document => {
 			const items = await this.completionItemProvider.provideCompletionItems(document, params.position, lsp.CancellationToken.None);
 			return {
@@ -184,49 +208,49 @@ export class LspServer {
 	}
 
 	public async hover(params: lsp.TextDocumentPositionParams): Promise<lsp.Hover> {
-		await activated;
+		await this.activation;
 		return this.executeOnDocument('hover', params, async document => {
 			return this.hoverProvider.provideHover(document, params.position, lsp.CancellationToken.None);
 		});
 	}
 
 	public async rename(params: lsp.RenameParams): Promise<lsp.WorkspaceEdit> {
-		await activated;
+		await this.activation;
 		return this.executeOnDocument('onRename', params, async document => {
 			return this.renameProvider.provideRenameEdits(document, params.position, params.newName, lsp.CancellationToken.None);
 		});
 	}
 
 	public async references(params: lsp.TextDocumentPositionParams): Promise<lsp.Location[]> {
-		await activated;
+		await this.activation;
 		return this.executeOnDocument('onReferences', params, async document => {
 			return this.referenceProvider.provideReferences(document, params.position, { includeDeclaration: true}, lsp.CancellationToken.None);
 		});
 	}
 
 	public async documentFormatting(params: lsp.DocumentFormattingParams): Promise<lsp.TextEdit[]> {
-		await activated;
+		await this.activation;
 		return this.executeOnDocument('format', params, async document => {
 			return this.formattingProvider.provideDocumentFormattingEdits(document, params.options, lsp.CancellationToken.None);
 		});
 	}
 
 	public async signatureHelp(params: lsp.TextDocumentPositionParams): Promise<lsp.SignatureHelp> {
-		await activated;
+		await this.activation;
 		return this.executeOnDocument('signatureHelp', params, async document => {
 			return this.signatureHelpProvider.provideSignatureHelp(document, params.position, lsp.CancellationToken.None);
 		});
 	}
 
 	public async codeAction(params: lsp.CodeActionParams): Promise<lsp.Command[]> {
-		await activated;
+		await this.activation;
 		return this.executeOnDocument('codeAction', params, async document => {
 			return this.codeActionProvider.provideCodeActions(document, new Range(params.range), params.context, lsp.CancellationToken.None);
 		});
 	}
 
 	public async codeLens(params: lsp.CodeLensParams): Promise<lsp.CodeLens[]> {
-		await activated;
+		await this.activation;
 		return this.executeOnDocument('codeLens', params, async document => {
 			const referenceCodeLenses = await this.referenceCodeLensProvider.provideCodeLenses(document, lsp.CancellationToken.None);
 			const testCodeLenses = await this.testCodeLensProvider.provideCodeLenses(document, lsp.CancellationToken.None);
@@ -235,13 +259,13 @@ export class LspServer {
 	}
 
 	public async codeLensResolve(codeLens: CodeLens): Promise<CodeLens> {
-		await activated;
+		await this.activation;
 		codeLens.document = window.activeTextEditor.document;
 		return this.referenceCodeLensProvider.resolveCodeLens(codeLens, lsp.CancellationToken.None);
 	}
 
 	public async executeCommand(params: lsp.ExecuteCommandParams): Promise<any> {
-		await activated;
+		await this.activation;
 		this.logger.log('executeCommand', params);
 		const args = params.arguments;
 		const document = this.getOpenDocument(args[args.length - 2] as string);
@@ -251,14 +275,14 @@ export class LspServer {
 	}
 
 	public async documentHighlight(arg: lsp.TextDocumentPositionParams): Promise<lsp.DocumentHighlight[]> {
-		await activated;
+		await this.activation;
 		this.logger.log('documentHighlight', arg);
 		// TODO
 		return [];
 	}
 
 	public async workspaceSymbol(params: lsp.WorkspaceSymbolParams): Promise<lsp.SymbolInformation[]> {
-		await activated;
+		await this.activation;
 		this.logger.log('symbol', params);
 		return this.workspaceSymbolProvider.provideWorkspaceSymbols(params.query, lsp.CancellationToken.None);
 	}

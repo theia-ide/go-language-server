@@ -26,13 +26,7 @@ import { MessageType, workspace } from './vscode';
 import { updateGoPathGoRootFromConfig, offerToInstallTools } from '../src/goInstallTools';
 import { getCurrentGoPath } from '../src/util';
 
-let _activated: () => void;
-
-export const activated = new Promise<void>((resolve, reject) => {
-	_activated = resolve;
-});
-
-export function activate(lspClient: LspClient, lspServer: LspServer, logger: Logger) {
+export async function activate(lspClient: LspClient, lspServer: LspServer, logger: Logger): Promise<void> {
 	outputChannel.lspClient = lspClient;
 	window.lspClient = lspClient;
 
@@ -40,68 +34,6 @@ export function activate(lspClient: LspClient, lspServer: LspServer, logger: Log
 	console.error = logger.error.bind(logger);
 	console.warn = logger.warn.bind(logger);
 	console.info = logger.info.bind(logger);
-
-	updateGoPathGoRootFromConfig();
-	// .then(() => {
-	// 	const updateToolsCmdText = 'Update tools';
-	// 	const prevGoroot = ctx.globalState.get('goroot');
-	// 	const currentGoroot = process.env['GOROOT'];
-	// 	if (prevGoroot !== currentGoroot && prevGoroot) {
-	// 		vscode.window.showInformationMessage('Your goroot is different than before, few Go tools may need re-compiling', updateToolsCmdText).then(selected => {
-	// 			if (selected === updateToolsCmdText) {
-	// 				vscode.commands.executeCommand('go.tools.install');
-	// 			}
-	// 		});
-	// 	} else {
-	// 		getGoVersion().then(currentVersion => {
-	// 			if (currentVersion) {
-	// 				const prevVersion = ctx.globalState.get('goVersion');
-	// 				const currVersionString = `${currentVersion.major}.${currentVersion.minor}`;
-
-	// 				if (prevVersion !== currVersionString) {
-	// 					if (prevVersion) {
-	// 						vscode.window.showInformationMessage('Your Go version is different than before, few Go tools may need re-compiling', updateToolsCmdText).then(selected => {
-	// 							if (selected === updateToolsCmdText) {
-	// 								vscode.commands.executeCommand('go.tools.install');
-	// 							}
-	// 						});
-	// 					}
-	// 					ctx.globalState.update('goVersion', currVersionString);
-	// 				}
-	// 			}
-	// 		});
-	// 	}
-	// 	ctx.globalState.update('goroot', currentGoroot);
-	offerToInstallTools();
-
-	// ctx.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => {
-	// 	let updatedGoConfig = vscode.workspace.getConfiguration('go', vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.uri : null);
-	// 	sendTelemetryEventForConfig(updatedGoConfig);
-	// 	updateGoPathGoRootFromConfig();
-
-	// 	// If there was a change in "useLanguageServer" setting, then ask the user to reload VS Code.
-	// 	if (process.platform !== 'win32'
-	// 		&& didLangServerConfigChange(useLangServer, langServerFlags, updatedGoConfig)
-	// 		&& (!updatedGoConfig['useLanguageServer'] || checkLanguageServer())) {
-	// 		vscode.window.showInformationMessage('Reload VS Code window for the change in usage of language server to take effect', 'Reload').then(selected => {
-	// 			if (selected === 'Reload') {
-	// 				vscode.commands.executeCommand('workbench.action.reloadWindow');
-	// 			}
-	// 		});
-	// 	}
-	// 	useLangServer = updatedGoConfig['useLanguageServer'];
-
-	// 	// If there was a change in "toolsGopath" setting, then clear cache for go tools
-	// 	if (getToolsGopath() !== getToolsGopath(false)) {
-	// 		clearCacheForTools();
-	// 	}
-
-	// 	if (updatedGoConfig['enableCodeLens']) {
-	// 		testCodeLensProvider.setEnabled(updatedGoConfig['enableCodeLens']['runtest']);
-	// 		referencesCodeLensProvider.setEnabled(updatedGoConfig['enableCodeLens']['references']);
-	// 	}
-
-	// }));
 
 	errorDiagnosticCollection.onSet(lspClient.publishDiagnostics.bind(lspClient));
 	warningDiagnosticCollection.onSet(lspClient.publishDiagnostics.bind(lspClient));
@@ -193,7 +125,66 @@ export function activate(lspClient: LspClient, lspServer: LspServer, logger: Log
 			type: MessageType.Warning
 		});
 	});
-	_activated();
+
+	return updateGoPathGoRootFromConfig().then(() => {
+	// 	const updateToolsCmdText = 'Update tools';
+	// 	const prevGoroot = ctx.globalState.get('goroot');
+	// 	const currentGoroot = process.env['GOROOT'];
+	// 	if (prevGoroot !== currentGoroot && prevGoroot) {
+	// 		vscode.window.showInformationMessage('Your goroot is different than before, few Go tools may need re-compiling', updateToolsCmdText).then(selected => {
+	// 			if (selected === updateToolsCmdText) {
+	// 				vscode.commands.executeCommand('go.tools.install');
+	// 			}
+	// 		});
+	// 	} else {
+	// 		getGoVersion().then(currentVersion => {
+	// 			if (currentVersion) {
+	// 				const prevVersion = ctx.globalState.get('goVersion');
+	// 				const currVersionString = `${currentVersion.major}.${currentVersion.minor}`;
+
+	// 				if (prevVersion !== currVersionString) {
+	// 					if (prevVersion) {
+	// 						vscode.window.showInformationMessage('Your Go version is different than before, few Go tools may need re-compiling', updateToolsCmdText).then(selected => {
+	// 							if (selected === updateToolsCmdText) {
+	// 								vscode.commands.executeCommand('go.tools.install');
+	// 							}
+	// 						});
+	// 					}
+	// 					ctx.globalState.update('goVersion', currVersionString);
+	// 				}
+	// 			}
+	// 		});
+	// 	}
+	// 	ctx.globalState.update('goroot', currentGoroot);
+		offerToInstallTools();
+
+	//  ctx.subscriptions.push(vscode.workspace.onDidChangeConfiguration(() => {
+	// 	let updatedGoConfig = vscode.workspace.getConfiguration('go', vscode.window.activeTextEditor ? vscode.window.activeTextEditor.document.uri : null);
+	// 	sendTelemetryEventForConfig(updatedGoConfig);
+	// 	updateGoPathGoRootFromConfig();
+
+	// 	// If there was a change in "useLanguageServer" setting, then ask the user to reload VS Code.
+	// 	if (process.platform !== 'win32'
+	// 		&& didLangServerConfigChange(useLangServer, langServerFlags, updatedGoConfig)
+	// 		&& (!updatedGoConfig['useLanguageServer'] || checkLanguageServer())) {
+	// 		vscode.window.showInformationMessage('Reload VS Code window for the change in usage of language server to take effect', 'Reload').then(selected => {
+	// 			if (selected === 'Reload') {
+	// 				vscode.commands.executeCommand('workbench.action.reloadWindow');
+	// 			}
+	// 		});
+	// 	}
+	// 	useLangServer = updatedGoConfig['useLanguageServer'];
+
+	// 	// If there was a change in "toolsGopath" setting, then clear cache for go tools
+	// 	if (getToolsGopath() !== getToolsGopath(false)) {
+	// 		clearCacheForTools();
+	// 	}
+
+	// 	if (updatedGoConfig['enableCodeLens']) {
+	// 		testCodeLensProvider.setEnabled(updatedGoConfig['enableCodeLens']['runtest']);
+	// 		referencesCodeLensProvider.setEnabled(updatedGoConfig['enableCodeLens']['references']);
+	// 	}
+	});
 }
 
 export function mockActivate(lspClient: LspClient) {
@@ -202,6 +193,4 @@ export function mockActivate(lspClient: LspClient) {
 
 	errorDiagnosticCollection.onSet(lspClient.publishDiagnostics.bind(lspClient));
 	warningDiagnosticCollection.onSet(lspClient.publishDiagnostics.bind(lspClient));
-
-	_activated();
 }
