@@ -22,7 +22,7 @@
 | `go.test.generate.function` | Generate Unit Tests For Function | Generates unit tests for the selected function in the current file | ready |
 | `go.toggle.test.file` | Toggle Test File | Toggles between file in current active editor and the corresponding test file. | missing: cannot open editors |
 | `go.debug.startSession`|||
-| `go.show.commands` | Show All Commands... | Shows all commands from the Go extension in the wuick pick | test when prompting is available |
+| `go.show.commands` | Show All Commands... | Shows all commands from the Go extension in the quick pick | (display bug)[https://github.com/theia-ide/theia-go-extension/issues/4] |
 | `go.get.package` | Get Package | Run `go get -v` on the package on the current line. | test when oputput channel is available |
 | `go.playground` | Run on Go Playground | Upload the current selection or file to the Go Playground | untested |
 | `go.lint.package` | Lint Current Package | Run linter in the package of the current file. | mapped |
