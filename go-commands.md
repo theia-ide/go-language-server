@@ -15,7 +15,7 @@
 | `go.test.coverage` | Toggle Test Coverage In Current Package | Displays test coverage in the current package. | missing: depends on goCover, decorations not supported | 
 | `go.tests.showOutput` |||
 | `go.import.add` | Add Import | Add an import declaration | ready | 
-| `go.tools.install` | Install/Update Tools | install/update the required go packages ||
+| `go.tools.install` | Install/Update Tools | install/update the required go packages | ready |
 | `go.browse.packages` | Browse Packages | Browse packages and Go files inside the packages. | missing: cannot open editors |
 | `go.test.generate.package` | Generate Unit Tests For Package | Generates unit tests for the current package | ready |
 | `go.test.generate.file` | Generate Unit Tests For File | Generates unit tests for the current file | ready |
