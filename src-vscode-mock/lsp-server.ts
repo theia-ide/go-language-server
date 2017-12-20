@@ -265,8 +265,12 @@ export class LspServer {
 
 	public async codeLensResolve(codeLens: CodeLens): Promise<CodeLens> {
 		await this.activation;
-		codeLens.document = this.getOpenDocument((codeLens.data.textDocument as TextDocumentIdentifier).uri)
-		return this.referenceCodeLensProvider.resolveCodeLens(codeLens, lsp.CancellationToken.None);
+		if (!codeLens.command) {
+			codeLens.document = this.getOpenDocument((codeLens.data.textDocument as TextDocumentIdentifier).uri)
+			return this.referenceCodeLensProvider.resolveCodeLens(codeLens, lsp.CancellationToken.None);
+		} else {
+			return codeLens;
+		}
 	}
 
 	public async executeCommand(params: lsp.ExecuteCommandParams): Promise<any> {
