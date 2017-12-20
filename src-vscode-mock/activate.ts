@@ -24,7 +24,7 @@ import { CommandConfig } from './config';
 import { buildCode } from '../src/goBuild';
 import { MessageType, workspace } from './vscode';
 import { updateGoPathGoRootFromConfig, offerToInstallTools } from '../src/goInstallTools';
-import { getCurrentGoPath } from '../src/util';
+import { getCurrentGoPath, getToolsGopath } from '../src/util';
 
 export async function activate(lspClient: LspClient, lspServer: LspServer, logger: Logger): Promise<void> {
 	outputChannel.lspClient = lspClient;
@@ -55,6 +55,9 @@ export async function activate(lspClient: LspClient, lspServer: LspServer, logge
 			window.showInformationMessage(`Current GOPATH is inferred from ${inferredFrom}: ${gopath}`);
 		} else {
 			window.showInformationMessage('Current GOPATH: ' + gopath);
+		}
+		if (getToolsGopath()) {
+			window.showInformationMessage('toolsGopath: ' + getToolsGopath());
 		}
 	});
 
@@ -127,6 +130,7 @@ export async function activate(lspClient: LspClient, lspServer: LspServer, logge
 	});
 
 	return updateGoPathGoRootFromConfig().then(() => {
+		logger.error(JSON.stringify(workspace.getConfiguration('go')));
 	// 	const updateToolsCmdText = 'Update tools';
 	// 	const prevGoroot = ctx.globalState.get('goroot');
 	// 	const currentGoroot = process.env['GOROOT'];
