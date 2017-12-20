@@ -43,7 +43,7 @@ export class DefaultConfig implements Config {
 			(this as any)[key] = config[k].default;
 		}
 		(this as any)['enableCodeLens'] = {
-			runtest: true,
+			runtest: false,
 			references: true
 		} as any;
 		(this as any)['formatFlags'] = '';
