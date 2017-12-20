@@ -22,14 +22,14 @@
 | `go.test.generate.function` | Generate Unit Tests For Function | Generates unit tests for the selected function in the current file | ready |
 | `go.toggle.test.file` | Toggle Test File | Toggles between file in current active editor and the corresponding test file. | missing: cannot open editors |
 | `go.debug.startSession`|||
-| `go.show.commands` | Show All Commands... | Shows all commands from the Go extension in the quick pick | (display bug)[https://github.com/theia-ide/theia-go-extension/issues/4] |
+| `go.show.commands` | Show All Commands... | Shows all commands from the Go extension in the quick pick | [display bug](https://github.com/theia-ide/theia-go-extension/issues/4)|
 | `go.get.package` | Get Package | Run `go get -v` on the package on the current line. | test when oputput channel is available |
 | `go.playground` | Run on Go Playground | Upload the current selection or file to the Go Playground | untested |
-| `go.lint.package` | Lint Current Package | Run linter in the package of the current file. | mapped |
-| `go.lint.workspace` | Lint Workspace | Run linter in the current workspace. | mapped |
-| `go.vet.package` | Vet Current Package | Run go vet in the package of the current file. | mapped |
-| `go.vet.workspace` | Vet Workspace | Run go vet in the current workspace. | mapped |
-| `go.build.package` | Build Current Package | Build the package of the current file. | mapped |
-| `go.build.workspace` | Build Workspace | Build the current workspace. | mapped |
-| `go.install.package` | Install Current Package | Install the current package. | mapped |
+| `go.lint.package` | Lint Current Package | Run linter in the package of the current file. | ready |
+| `go.lint.workspace` | Lint Workspace | Run linter in the current workspace. | ready |
+| `go.vet.package` | Vet Current Package | Run go vet in the package of the current file. | ready |
+| `go.vet.workspace` | Vet Workspace | Run go vet in the current workspace. | ready |
+| `go.build.package` | Build Current Package | Build the package of the current file. | ready |
+| `go.build.workspace` | Build Workspace | Build the current workspace. | ready |
+| `go.install.package` | Install Current Package | Install the current package. | ready |
 | `go.promptforinstall`|||
