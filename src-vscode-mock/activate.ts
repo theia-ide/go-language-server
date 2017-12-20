@@ -23,7 +23,7 @@ import { playgroundCommand } from '../src/goPlayground';
 import { CommandConfig } from './config';
 import { buildCode } from '../src/goBuild';
 import { MessageType, workspace } from './vscode';
-import { updateGoPathGoRootFromConfig, offerToInstallTools } from '../src/goInstallTools';
+import { updateGoPathGoRootFromConfig, offerToInstallTools, installAllTools } from '../src/goInstallTools';
 import { getCurrentGoPath, getToolsGopath } from '../src/util';
 
 export async function activate(lspClient: LspClient, lspServer: LspServer, logger: Logger): Promise<void> {
@@ -128,6 +128,8 @@ export async function activate(lspClient: LspClient, lspServer: LspServer, logge
 			type: MessageType.Warning
 		});
 	});
+
+	commands.registerCommand('go.tools.install', installAllTools);
 
 	return updateGoPathGoRootFromConfig().then(() => {
 		lspClient.sendTelemetryEvent(workspace.getConfiguration('go'));
