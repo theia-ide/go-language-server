@@ -977,6 +977,7 @@
     }
   },
   "files": [
-    "out/"
+	"out/",
+	"snippets/"
   ]
 }
