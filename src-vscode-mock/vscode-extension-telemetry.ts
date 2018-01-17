@@ -14,4 +14,8 @@ export default class TelemetryReporter {
 	sendTelemetryEvent(...args: any[]) {
 		window.lspClient.sendTelemetryEvent(args);
 	}
+
+	async dispose() {
+		// no-op
+	}
 }

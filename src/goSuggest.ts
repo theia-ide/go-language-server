@@ -198,7 +198,10 @@ export class GoCompletionItemProvider implements vscode.CompletionItemProvider {
 								auxItem.sortText = 'b';
 								let prefix = 'func (' + suggest.name[0].toLowerCase() + ' *' + suggest.name + ')';
 								let snippet = prefix + ' ${1:methodName}(${2}) ${3} \{\n\t$0\n\}';
-								auxItem.insertText = new vscode.SnippetString(snippet);
+								// [TypeFox]
+								// auxItem.insertText = new vscode.SnippetString(snippet);
+								auxItem.insertText =snippet;
+								auxItem.insertTextFormat = vscode.InsertTextFormat.Snippet;
 								suggestions.push(auxItem);
 							}
 

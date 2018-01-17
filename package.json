@@ -1,14 +1,7 @@
 {
-<<<<<<< HEAD
-  "name": "Go",
-  "version": "0.6.73",
-  "publisher": "lukehoban",
-  "description": "Rich Go language support for Visual Studio Code",
-=======
   "name": "go-language-server",
   "version": "0.1.5",
   "description": "A Go language server based on the Rich Go language support for Visual Studio Code",
->>>>>>> Rebased and squashed changes to VSCode extension code
   "author": {
     "name": "TypeFox and Microsoft Corporation - Development Labs"
   },
@@ -48,14 +41,10 @@
     "json-rpc2": "^1.0.2",
     "pkginfo": "^0.4.1",
     "vscode-debugprotocol": "^1.11.0",
-<<<<<<< HEAD
     "vscode-extension-telemetry": "0.0.10",
-    "vscode-languageclient": "^2.5.0"
-=======
     "vscode-languageclient": "^2.5.0",
     "vscode-languageserver": "^3.5.0",
     "vscode-uri": "^1.0.1"
->>>>>>> Rebased and squashed changes to VSCode extension code
   },
   "devDependencies": {
     "@types/chai": "^4.0.4",
@@ -987,13 +976,9 @@
         }
       ]
     }
-<<<<<<< HEAD
-  }
-=======
   },
   "files": [
     "out/",
     "snippets/"
   ]
->>>>>>> v0.1.1
 }
