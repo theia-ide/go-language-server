@@ -96,22 +96,6 @@ export async function activate(lspClient: LspClient, lspServer: LspServer, logge
 
 	commands.registerCommand('go.playground', playgroundCommand);
 
-	commands.registerCommand('go.show.commands', () => {
-		const commandTitles: string[] = [];
-		const title2commandId = new Map<string, string>();
-		for (let key of commands.commandMap.keys()) {
-			const title = CommandConfig.instance.getTitle(key);
-			if (title) {
-				title2commandId.set(title, key);
-				commandTitles.push(title);
-			}
-		}
-		window.showQuickPick(commandTitles).then(pick => {
-			const command = title2commandId.get(pick);
-			commands.executeCommand(command);
-		});
-	});
-
 	commands.registerCommand('go.build.package', buildCode);
 
 	commands.registerCommand('go.build.workspace', () => buildCode(true));
