@@ -256,18 +256,33 @@ export class LspServer {
 			const referenceCodeLenses = await this.referenceCodeLensProvider.provideCodeLenses(document, lsp.CancellationToken.None);
 			const testCodeLenses = await this.testCodeLensProvider.provideCodeLenses(document, lsp.CancellationToken.None);
 			const allCodeLenses = referenceCodeLenses.concat(testCodeLenses);
-			allCodeLenses.forEach(codeLens => codeLens.data = {
-				textDocument: params.textDocument
+
+			const result: lsp.CodeLens[] = allCodeLenses.map((lens: CodeLens) : lsp.CodeLens => {
+				return {
+					range: lens.range,
+					data: {
+						textDocument: params.textDocument,
+					}
+				};
 			});
-			return allCodeLenses;
+
+			return result;
 		});
 	}
 
 	public async codeLensResolve(codeLens: CodeLens): Promise<CodeLens> {
 		await this.activation;
 		if (!codeLens.command) {
-			codeLens.document = this.getOpenDocument((codeLens.data.textDocument as TextDocumentIdentifier).uri)
-			return this.referenceCodeLensProvider.resolveCodeLens(codeLens, lsp.CancellationToken.None);
+			codeLens.document = this.getOpenDocument(codeLens.data.textDocument.uri);
+
+			const resolvedCodeLens: CodeLens = await this.referenceCodeLensProvider.resolveCodeLens(codeLens, lsp.CancellationToken.None);
+			const result: lsp.CodeLens = {
+				range: resolvedCodeLens.range,
+				command: resolvedCodeLens.command,
+				data: resolvedCodeLens.data,
+			};
+
+			return result;
 		} else {
 			return codeLens;
 		}

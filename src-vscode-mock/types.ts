@@ -10,11 +10,14 @@ import { uriToStringUri } from './utils';
 import { window } from './window';
 import * as lsp from 'vscode-languageserver';
 import URI from 'vscode-uri';
+import { TextDocumentIdentifier } from 'vscode-languageserver';
 
 export interface CodeActionContext extends lsp.CodeActionContext { }
 
 export class CodeLens implements lsp.CodeLens {
-	data?: any;
+	data?: {
+		textDocument: TextDocumentIdentifier,
+	};
 
 	document?: TextDocument;
 
