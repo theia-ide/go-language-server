@@ -23,6 +23,6 @@ export * from './window';
 export * from './workspace';
 
 export { Uri }
-export { MessageType } from 'vscode-languageclient/lib/protocol';
+export { MessageType } from 'vscode-languageserver-protocol';
 export { DiagnosticSeverity, CompletionItemKind, SymbolKind } from 'vscode-languageserver-types';
 export { Disposable, Event, Emitter as EventEmitter, CancellationToken, CancellationTokenSource } from 'vscode-languageserver'
