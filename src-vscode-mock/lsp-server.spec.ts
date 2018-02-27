@@ -73,9 +73,9 @@ before(async () => {
 			// throw new Error('unsupported');
 		}
 	};
-	const logger = new ConsoleLogger();
+
 	server = new LspServer({
-		logger: logger,
+		logger: console,
 		lspClient: client,
 	});
 	(workspace.getConfiguration('go') as any)['toolsGopath'] = path.resolve(homedir(), 'go');
