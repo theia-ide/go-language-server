@@ -15,7 +15,6 @@
 				"./out/**/*.spec.js"
 			],
 			"internalConsoleOptions": "openOnSessionStart",
-			"runtimeExecutable": "/Users/koehnlein/.nvm/versions/node/v8.8.1/bin/node"
 		},
 		{
 			"type": "node",
