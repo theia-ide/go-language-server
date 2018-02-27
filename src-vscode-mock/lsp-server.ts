@@ -111,8 +111,7 @@ export class LspServer {
 		return this.initializeResult;
 	}
 
-	public async initialized(params: lsp.InitializeParams): Promise<void> {
-		this.logger.log('initialized', params);
+	public async initialized(): Promise<void> {
 		return activate(this.options.lspClient, this, this.logger).then(() => {
 			this.codeActionProvider = new GoCodeActionProvider();
 			this.completionItemProvider = new GoCompletionItemProvider();
