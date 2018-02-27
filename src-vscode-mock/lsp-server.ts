@@ -179,9 +179,13 @@ export class LspServer {
 		await this.activation;
 		return this.executeOnDocument('definition', params, async document => {
 			const definition = await this.definitionProvider.provideDefinition(document, params.position, lsp.CancellationToken.None);
-			if (definition)
-				return definition;
-			else
+			if (definition) {
+				const result: lsp.Definition = {
+					uri: definition.uri,
+					range: definition.range,
+				};
+				return result;
+			} else
 				return [];
 		});
 	}
