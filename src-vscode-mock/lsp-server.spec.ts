@@ -86,6 +86,8 @@ before(async () => {
 		capabilities: {}
 	});
 	mockActivate(client);
+
+	server.initialized();
 });
 
 export function openNewDocument(fileName: string, contents: string) {
