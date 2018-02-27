@@ -7,7 +7,7 @@
 
 import * as lsp from 'vscode-languageserver';
 
-import { LspClientLogger } from './logger';
+import { LspClientLogger, PrefixingLogger, Logger } from './logger';
 import { LspServer } from './lsp-server';
 import { LspClientImpl } from './lsp-client';
 import { activate } from './activate';
@@ -22,7 +22,8 @@ export interface IServerOptions {
 export function createLspConnection(options: IServerOptions): lsp.IConnection {
 	const connection = lsp.createConnection();
 	const lspClient = new LspClientImpl(connection);
-	const logger = new LspClientLogger(lspClient, options.showMessageLevel);
+	let logger: Logger = new LspClientLogger(lspClient, options.showMessageLevel);
+	logger = new PrefixingLogger(logger, '[lspserver]');
 	const server: LspServer = new LspServer({
 		logger,
 		lspClient

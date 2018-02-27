@@ -73,7 +73,7 @@ export class LspServer {
 	});
 
 	constructor(private options: IServerOptions) {
-		this.logger = new PrefixingLogger(options.logger, '[lspserver]');
+		this.logger = options.logger;
 	}
 
 	public async initialize(params: lsp.InitializeParams): Promise<lsp.InitializeResult> {
