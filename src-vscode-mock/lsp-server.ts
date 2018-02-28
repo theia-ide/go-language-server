@@ -13,7 +13,7 @@ import { LspClient } from './lsp-client';
 import { SnippetProposalProvider } from './snippet-proposal-provider';
 import { TextDocument } from './text-document';
 import { TextEditor } from './text-editor';
-import { Location, CodeLens, Range } from './types';
+import { Location, CodeLens, Range, Command } from './types';
 import { uriToPath, uriToStringUri } from './utils';
 import { window } from './window';
 import { workspace, WorkspaceFolder } from './workspace';
@@ -42,6 +42,14 @@ export interface IServerOptions {
 }
 
 export const WORKSPACE_EDIT_COMMAND = 'workspace-edit';
+
+function vscodeCommandToLspCommand(vscodeCommand: Command): lsp.Command {
+	return {
+		title: vscodeCommand.title,
+		command: vscodeCommand.command,
+		arguments: vscodeCommand.arguments,
+	};
+}
 
 export class LspServer {
 
@@ -281,7 +289,7 @@ export class LspServer {
 			const resolvedCodeLens: CodeLens = await this.referenceCodeLensProvider.resolveCodeLens(codeLens, lsp.CancellationToken.None);
 			const result: lsp.CodeLens = {
 				range: resolvedCodeLens.range,
-				command: resolvedCodeLens.command,
+				command: vscodeCommandToLspCommand(resolvedCodeLens.command),
 				data: resolvedCodeLens.data,
 			};
 
