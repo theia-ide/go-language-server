@@ -118,6 +118,11 @@ export async function activate(lspClient: LspClient, lspServer: LspServer, logge
 	return updateGoPathGoRootFromConfig().then(() => {
 		lspClient.sendTelemetryEvent(workspace.getConfiguration('go'));
 		offerToInstallTools();
+	}).catch((e) => {
+		lspClient.showMessage({
+			type: MessageType.Error,
+			message: e.stack,
+		});
 	});
 }
 
