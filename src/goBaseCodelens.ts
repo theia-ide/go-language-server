@@ -1,5 +1,5 @@
 
-import vscode = require('vscode');
+import * as vscode from '../src-vscode-mock/vscode';
 
 export abstract class GoBaseCodeLensProvider implements vscode.CodeLensProvider {
 	protected enabled: boolean = true;
@@ -13,7 +13,9 @@ export abstract class GoBaseCodeLensProvider implements vscode.CodeLensProvider 
 	public setEnabled(enabled: false): void {
 		if (this.enabled !== enabled) {
 			this.enabled = enabled;
-			this.onDidChangeCodeLensesEmitter.fire();
+			// [TypeFox]
+			// this.onDidChangeCodeLensesEmitter.fire();
+			this.onDidChangeCodeLensesEmitter.fire(undefined);
 		}
 	}
 

@@ -5,7 +5,7 @@
 
 import cp = require('child_process');
 import path = require('path');
-import vscode = require('vscode');
+import * as vscode from '../src-vscode-mock/vscode';
 import util = require('util');
 import { parseEnvFile, getGoRuntimePath, getCurrentGoWorkspaceFromGOPATH } from './goPath';
 import { getToolsEnvVars, getGoVersion, LineBuffer, SemVersion, resolvePath, getCurrentGoPath } from './util';

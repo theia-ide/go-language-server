@@ -5,6 +5,8 @@
 
 'use strict';
 
+// [TypeFox] unused, as we can't open editors
+
 import vscode = require('vscode');
 import cp = require('child_process');
 import { getGoRuntimePath } from './goPath';

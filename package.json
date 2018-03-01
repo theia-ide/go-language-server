@@ -1,10 +1,9 @@
 {
-  "name": "Go",
-  "version": "0.6.77",
-  "publisher": "lukehoban",
-  "description": "Rich Go language support for Visual Studio Code",
+  "name": "go-language-server",
+  "version": "0.1.7",
+  "description": "A Go language server based on the Rich Go language support for Visual Studio Code",
   "author": {
-    "name": "Microsoft Corporation - Development Labs"
+    "name": "TypeFox and Microsoft Corporation - Development Labs"
   },
   "icon": "images/goIcon.png",
   "categories": [
@@ -18,7 +17,6 @@
     "color": "#CFB69A",
     "theme": "light"
   },
-  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/Microsoft/vscode-go.git"
@@ -28,31 +26,38 @@
   ],
   "scripts": {
     "vscode:prepublish": "tsc -p ./",
-    "compile": "tsc -watch -p ./",
-    "postinstall": "node ./node_modules/vscode/bin/install",
-    "test": "node ./node_modules/vscode/bin/test",
-    "lint": "node ./node_modules/tslint/bin/tslint ./src/*.ts ./src/debugAdapter/*.ts ./test/*.ts"
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "node ./node_modules/tslint/bin/tslint ./src/*.ts ./src/debugAdapter/*.ts ./src-vscode-mock/*.ts ./test/*.ts",
+    "test": "mocha --reporter spec \"./out/**/*.spec.js\""
   },
   "extensionDependencies": [],
   "dependencies": {
+    "command-exists": "^1.2.2",
+    "commander": "^2.11.0",
     "console-stamp": "^0.2.2",
     "diff": "~3.3.0",
+    "fs-extra": "^4.0.2",
     "json-rpc2": "^1.0.2",
-    "vscode": "^1.1.4",
-    "vscode-debug-logger": "^0.0.4",
-    "vscode-debugadapter": "^1.11.0",
+    "pkginfo": "^0.4.1",
     "vscode-debugprotocol": "^1.11.0",
     "vscode-extension-telemetry": "^0.0.15",
-    "vscode-languageclient": "^2.5.0"
+    "vscode-languageclient": "^3.5.0",
+    "vscode-languageserver": "^3.5.0",
+    "vscode-languageserver-protocol": "^3.5.0",
+    "vscode-uri": "^1.0.1"
   },
   "devDependencies": {
+    "@types/chai": "^4.0.4",
+    "@types/commander": "^2.9.2",
     "@types/fs-extra": "0.0.35",
     "@types/mocha": "^2.2.33",
     "@types/node": "^6.0.50",
-    "fs-extra": "^1.0.0",
+    "chai": "^4.1.2",
+    "mocha": "^3.5.3",
+    "source-map-support": "^0.4.18",
     "tslint": "^4.0.2",
-    "typescript": "^2.1.5",
-    "vscode": "^1.1.4"
+    "typescript": "^2.7.1"
   },
   "engines": {
     "vscode": "^1.17.0"
@@ -987,5 +992,9 @@
         }
       ]
     }
-  }
+  },
+  "files": [
+    "out/",
+    "snippets/"
+  ]
 }

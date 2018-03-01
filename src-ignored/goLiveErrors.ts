@@ -1,5 +1,6 @@
 'use strict';
 
+// [TypeFox] not used in favor of goBuild
 import vscode = require('vscode');
 import { getBinPath, getToolsEnvVars } from './util';
 import cp = require('child_process');

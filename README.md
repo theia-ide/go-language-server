@@ -1,143 +1,57 @@
-# Go for Visual Studio Code
+# A Go Language Server based on the Go Extension for Visual Studio Code
 
-[![Join the chat at https://gitter.im/Microsoft/vscode-go](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Microsoft/vscode-go?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/Microsoft/vscode-go.svg?branch=master)](https://travis-ci.org/Microsoft/vscode-go)
+Wraps the VSCode Go extension from Microsoft into a language server, such that
+its functionality can be reused with other LSP-aware clients.
 
-Read the [Release Notes](https://github.com/Microsoft/vscode-go/wiki/Release-Notes) to know what has changed over the last few versions of this extension.
+In the first iteration we will mock VSCode APIs or simulate their behavior
+backed by an LSP. We will maintain this as a fork of the original repository
+such that we can easily pick up incoming improvements of that by just rebasing.
+Once we got more confidence, we'd probably refactor the VSCode specific parts
+away.
 
-This extension adds rich language support for the Go language to VS Code, including:
+[Original README.md](README_old.MD).
 
-- Completion Lists (using `gocode`)
-- Signature Help (using `gogetdoc` or `godef`+`godoc`)
-- Snippets
-- Quick Info (using `gogetdoc` or `godef`+`godoc`)
-- Goto Definition (using `gogetdoc` or `godef`+`godoc`)
-- Find References (using `guru`)
-- Find implementations (using `guru`)
-- References CodeLens
-- File outline (using `go-outline`)
-- Workspace symbol search (using `go-symbols`)
-- Rename (using `gorename`. Note: For Undo after rename to work in Windows you need to have `diff` tool in your path)
-- Build-on-save (using `go build` and `go test`)
-- Lint-on-save (using `golint` or `gometalinter`)
-- Format on save as well as format manually (using `goreturns` or `goimports` or `gofmt`)
-- Generate unit tests skeleton (using `gotests`)
-- Add Imports (using `gopkgs`)
-- Add/Remove Tags on struct fields (using `gomodifytags`)
-- Semantic/Syntactic error reporting as you type (using `gotype-live`)
-- Run Tests under the cursor, in current file, in current package, in the whole workspace (using `go test`)
-- Show code coverage
-- Generate method stubs for interfaces (using `impl`)
-- Fill struct literals with default values (using `fillstruct`)
-- [_partially implemented_] Debugging (using `delve`)
-- Upload to the Go Playground (using `goplay`)
+## Mismatches and Challenges
 
-### IDE Features
-![IDE](https://i.giphy.com/xTiTndDHV3GeIy6aNa.gif)
+- There is no such thing as the `activeTextEditor` in LSP. For services that
+  have a `TextDocumentItem`, we set it before calling the service impl, but for
+  other services, e.g. `executeCommand` we cannot make sure that they are
+  performed on the correct document.
+- We have to use/mock/adapt a lot of global variables
 
-## How to use this extension?
+## Prerequisites
 
-Install and open [Visual Studio Code](https://code.visualstudio.com). Press `Ctrl+Shift+X` or `Cmd+Shift+X` to open the Extensions pane. Find and install the Go extension. You can also install the extension from the [Marketplace](https://marketplace.visualstudio.com/items?itemName=lukehoban.Go). Open any `.go` file in VS Code. The extension is now activated.
+Make sure the `go` command is available from your path and that the GOPATH
+environment variable points to where your go packages are installed.  Some go
+packages are necessary:
 
-This extension uses a set of Go tools to provide the various rich features. These tools are installed in your GOPATH by default. If you wish to have these tools in a separate location, provide the desired location in the setting `go.toolsGopath`. Read more about this and the tools at [Go tools that the Go extension depends on](https://github.com/Microsoft/vscode-go/wiki/Go-tools-that-the-Go-extension-depends-on).
+    go get -v github.com/nsf/gocode
+    go get -v github.com/uudashr/gopkgs/cmd/gopkgs
+    go get -v github.com/ramya-rao-a/go-outline
+    go get -v github.com/acroca/go-symbols
+    go get -v golang.org/x/tools/cmd/guru
+    go get -v golang.org/x/tools/cmd/gorename
+    go get -v github.com/fatih/gomodifytags
+    go get -v github.com/haya14busa/goplay/cmd/goplay
+    go get -v github.com/josharian/impl
+    go get -v github.com/tylerb/gotype-live
+    go get -v github.com/rogpeppe/godef
+    go get -v golang.org/x/tools/cmd/godoc
+    go get -v github.com/zmb3/gogetdoc
+    go get -v golang.org/x/tools/cmd/goimports
+    go get -v sourcegraph.com/sqs/goreturns
+    go get -v github.com/golang/lint/golint
+    go get -v github.com/cweill/gotests/...
+    go get -v github.com/alecthomas/gometalinter
+    go get -v honnef.co/go/tools/...
+    go get -v github.com/sourcegraph/go-langserver
+    go get -v github.com/derekparker/delve/cmd/dlv
 
-You will see `Analysis Tools Missing` in the bottom right, clicking this will offer to install all of the dependent Go tools. You can also run the command `Go: Install/Update tools` to install/update the same.
+Note: this list comes from
+[here](https://github.com/theia-ide/go-language-server/blob/master/src/goInstallTools.ts#L20-L42).
 
-**Note 1**: Read [GOPATH in the VS Code Go extension](https://github.com/Microsoft/vscode-go/wiki/GOPATH-in-the-VS-Code-Go-extension) to learn about the different ways you can get the extension to set GOPATH.
+## Build and usage
 
-**Note 2**: Users may want to consider turning `Auto Save` on in Visual Studio Code (`"files.autoSave": "afterDelay"`) when using this extension.  Many of the Go tools work only on saved files, and error reporting will be more interactive with `Auto Save` turned on. If you do turn `Auto Save` on, then the format-on-save feature will be turned off.
-
-**Note 3**:  This extension uses `gocode` to provide completion lists as you type. If you have disabled the `go.buildOnSave` setting, then you may not get fresh results from not-yet-built dependencies. In this case, to get fresh results from such dependencies, enable the `go.gocodeAutoBuild` setting. This will make the extension use `gocode`'s `autobuild=true` setting. If you experience any performance issues with autocomplete, you should try setting `"go.gocodeAutoBuild": false` in your VS Code settings.
-
-### Customizing the Go extension features
-
-The Go extension is ready to use on the get go. If you want to customize the features, you can edit the settings in your User or Workspace settings. Read [All Settings & Commands in Visual Studio Code Go extension](https://github.com/Microsoft/vscode-go/wiki/All-Settings-&-Commands-in-Visual-Studio-Code-Go-extension) for the full list of options and their descriptions.
-
-
-### Go Language Server (Experimental)
-Set `go.useLanguageServer` to `true` to use the Go language server from [Sourcegraph](https://github.com/sourcegraph/go-langserver) for features like Hover, Definition, Find All References, Signature Help, Go to Symbol in File and Workspace.
-* This is an experimental feature and is not available in Windows yet.
-* If set to true, you will be prompted to install the Go language server. Once installed, you will have to reload VS Code window. The language server will then be run by the Go extension in the background to provide services needed for the above mentioned features.
-* Everytime you change the value of the setting `go.useLanguageServer`, you need to reload the VS Code window for it to take effect.
-* To collect traces, set `"go.languageServerFlags": ["-trace"]`
-* To collect errors from language server in a logfile, set `"go.languageServerFlags": ["-trace", "-logfile", "path to a text file that exists"]`
-
-
-### Linter
-
-A linter is a tool giving coding style feedback and suggestions.
-By default this extension uses the official [golint](https://github.com/golang/lint) as a linter.
-
-You can change the default linter and use the more advanced [Go Meta Linter](https://github.com/alecthomas/gometalinter)
-by setting `go.lintTool` to "gometalinter" in your settings.
-
-Go meta linter uses a collection of various linters which will be installed for you by the extension.
-
-Some of the very useful linter tools:
-* [errcheck](https://github.com/kisielk/errcheck) checks for unchecked errors in your code.
-* [varcheck](https://github.com/opennota/check) finds unused global variables and constants.
-* [deadcode](https://github.com/tsenart/deadcode) finds unused code.
-
-If you want to run only specific linters (some linters are slow), you can modify your configuration to specify them:
-
-```javascript
-  "go.lintFlags": ["--disable=all", "--enable=errcheck"],
-```
-
-Alternatively, you can use [megacheck](https://github.com/dominikh/go-tools/tree/master/cmd/megacheck) which 
-may have significantly better performance than `gometalinter`, while only supporting a subset of the tools.
-
-Finally, the result of those linters will show right in the code (locations with suggestions will be underlined),
-as well as in the output pane.
-
-### Commands
-
-In addition to integrated editing features, the extension also provides several commands in the Command Palette for working with Go files:
-
-* `Go: Add Import` to add an import from the list of packages in your Go context
-* `Go: Current GOPATH` to see your currently configured GOPATH
-* `Go: Test at cursor` to run a test at the current cursor position in the active document
-* `Go: Test Package` to run all tests in the package containing the active document
-* `Go: Test File` to run all tests in the current active document
-* `Go: Test Previous` to run the previously run test command
-* `Go: Test All Packages in Workspace` to run all tests in the current workspace
-* `Go: Generates unit tests for package` Generates unit tests for the current package
-* `Go: Generates unit tests for file` Generates unit tests for the current file
-* `Go: Generates unit tests for function` Generates unit tests for the selected function in the current file
-* `Go: Install Tools` Installs/updates all the Go tools that the extension depends on
-* `Go: Add Tags` Adds configured tags to selected struct fields.
-* `Go: Remove Tags` Removes configured tags from selected struct fields.
-* `Go: Generate Interface Stubs` Generates method stubs for given interface
-* `Go: Fill Struct` Fills struct literal with default values
-* `Go: Run on Go Playground` Upload the current selection or file to the Go Playground
-
-You can access all of the above commands from the command pallet (`Cmd+Shift+P` or `Ctrl+Shift+P`).
-
-Few of these are available in the editor context menu as an experimental feature as well. To control which of these commands show up in the editor context menu, update the setting `go.editorContextMenuCommands`.
-
-
-### _Optional_: Debugging
-
-To use the debugger, you must currently manually install `delve`.  See the [Installation Instructions](https://github.com/derekparker/delve/tree/master/Documentation/installation) for full details.  On OS X it requires creating a self-signed cert to sign the `dlv` binary.
-
-For more read [Debugging Go Code Using VS Code](https://github.com/Microsoft/vscode-go/wiki/Debugging-Go-code-using-VS-Code).
-
-#### Remote Debugging
-
-To remote debug using VS Code, read [Remote Debugging](https://github.com/Microsoft/vscode-go/wiki/Debugging-Go-code-using-VS-Code#remote-debugging).
-
-## Install or update all dependencies
-
-To quickly get all dependencies installed (or updated) see the [Go Tools wiki page](https://github.com/Microsoft/vscode-go/wiki/Go-tools-that-the-Go-extension-depends-on)
-
-## Building and Debugging the Extension
-
-You can set up a development environment for debugging the extension during extension development.
-Read more at [Building, Debugging and Sideloading the extension in Visual Studio Code](https://github.com/Microsoft/vscode-go/wiki/Building,-Debugging-and-Sideloading-the-extension-in-Visual-Studio-Code).
-
-## Tools this extension depends on
-
-This extension uses a host of Go tools to provide the various rich features. These tools are installed in your GOPATH by default. If you wish to have the extension use a separate GOPATH for its tools, provide the desired location in the setting `go.toolsGopath`. Read more about this and the tools at [Go tools that the Go extension depends on](https://github.com/Microsoft/vscode-go/wiki/Go-tools-that-the-Go-extension-depends-on).
-
-
-## License
-[MIT](LICENSE)
+1. Run `npm install` to install the package dependencies.
+2. Run `npm run compile` to compile the Typescript to Javascript.
+3. Run the server with `node ./out/src-vscode-mock/cli.js --stdio`.

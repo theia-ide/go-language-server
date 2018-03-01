@@ -5,6 +5,8 @@
 
 'use strict';
 
+// [TypeFox] unsused as we cannot prompt for the interface
+
 import vscode = require('vscode');
 import cp = require('child_process');
 import { getBinPath, getToolsEnvVars } from './util';

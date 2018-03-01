@@ -5,7 +5,7 @@
 
 'use strict';
 
-import vscode = require('vscode');
+import * as vscode from '../src-vscode-mock/vscode';
 import cp = require('child_process');
 import { getBinPath, getFileArchive, getToolsEnvVars, killProcess } from './util';
 import { promptForMissingTool, promptForUpdatingTool } from './goInstallTools';

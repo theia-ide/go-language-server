@@ -3,18 +3,20 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------*/
 
-import vscode = require('vscode');
+import * as vscode from '../src-vscode-mock/vscode';
 import path = require('path');
 import { getGoRuntimePath, getBinPathWithPreferredGopath, resolveHomeDir, getInferredGopath } from './goPath';
 import cp = require('child_process');
-import TelemetryReporter from 'vscode-extension-telemetry';
+import TelemetryReporter from '../src-vscode-mock/vscode-extension-telemetry';
 import fs = require('fs');
 import os = require('os');
 import { outputChannel } from './goStatus';
 import { errorDiagnosticCollection, warningDiagnosticCollection } from './goMain';
 
 const extensionId: string = 'lukehoban.Go';
-const extensionVersion: string = vscode.extensions.getExtension(extensionId).packageJSON.version;
+// [TypeFox]
+// const extensionVersion: string = vscode.extensions.getExtension(extensionId).packageJSON.version;
+const extensionVersion = '0.1.0';
 const aiKey: string = 'AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217';
 
 export const goKeywords: string[] = [
@@ -401,14 +403,15 @@ export function getCurrentGoPath(workspaceUri?: vscode.Uri): string {
 	return inferredGopath ? inferredGopath : (configGopath || process.env['GOPATH']);
 }
 
-export function getExtensionCommands(): any[] {
-	let pkgJSON = vscode.extensions.getExtension(extensionId).packageJSON;
-	if (!pkgJSON.contributes || !pkgJSON.contributes.commands) {
-		return;
-	}
-	let extensionCommands: any[] = vscode.extensions.getExtension(extensionId).packageJSON.contributes.commands.filter(x => x.command !== 'go.show.commands');
-	return extensionCommands;
-}
+// [TypeFox]
+// export function getExtensionCommands(): any[] {
+// 	let pkgJSON = vscode.extensions.getExtension(extensionId).packageJSON;
+// 	if (!pkgJSON.contributes || !pkgJSON.contributes.commands) {
+// 		return;
+// 	}
+// 	let extensionCommands: any[] = vscode.extensions.getExtension(extensionId).packageJSON.contributes.commands.filter(x => x.command !== 'go.show.commands');
+// 	return extensionCommands;
+// }
 
 export class LineBuffer {
 	private buf: string = '';
@@ -660,7 +663,9 @@ export function handleDiagnosticErrors(document: vscode.TextDocument, errors: IC
 		let startColumn = 0;
 		let endColumn = 1;
 		if (document && document.uri.toString() === canonicalFile) {
-			let range = new vscode.Range(error.line - 1, 0, error.line - 1, document.lineAt(error.line - 1).range.end.character + 1);
+			// [TypeFox]
+			// let range = new vscode.Range(error.line - 1, 0, error.line - 1, document.lineAt(error.line - 1).range.end.character + 1);
+			let range = new vscode.Range(error.line - 1, 0, error.line - 1, document.lineAt(error.line - 1).text.length);
 			let text = document.getText(range);
 			let [_, leading, trailing] = /^(\s*).*(\s*)$/.exec(text);
 			startColumn = leading.length;

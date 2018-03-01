@@ -5,7 +5,7 @@
 
 'use strict';
 
-import vscode = require('vscode');
+import * as vscode from '../src-vscode-mock/vscode';
 import fs = require('fs');
 import path = require('path');
 import cp = require('child_process');
@@ -13,7 +13,7 @@ import { showGoStatus, hideGoStatus } from './goStatus';
 import { getGoRuntimePath } from './goPath';
 import { outputChannel } from './goStatus';
 import { getBinPath, getToolsGopath, getGoVersion, SemVersion, isVendorSupported, getCurrentGoPath, resolvePath } from './util';
-import { goLiveErrorsEnabled } from './goLiveErrors';
+// import { goLiveErrorsEnabled } from './goLiveErrors';
 
 let updatesDeclinedTools: string[] = [];
 let installsDeclinedTools: string[] = [];
@@ -76,9 +76,10 @@ function getTools(goVersion: SemVersion): string[] {
 		'fillstruct'
 	];
 
-	if (goLiveErrorsEnabled()) {
-		tools.push('gotype-live');
-	}
+	// [TypeFox]
+	// if (goLiveErrorsEnabled()) {
+	// 	tools.push('gotype-live');
+	// }
 
 	// Install the doc/def tool that was chosen by the user
 	if (goConfig['docsTool'] === 'godoc') {

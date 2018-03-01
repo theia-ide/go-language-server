@@ -1,5 +1,5 @@
 import path = require('path');
-import vscode = require('vscode');
+import * as vscode from '../src-vscode-mock/vscode';
 import { getToolsEnvVars, resolvePath, runTool, ICheckResult, handleDiagnosticErrors, getWorkspaceFolderPath } from './util';
 import { outputChannel } from './goStatus';
 import { diagnosticsStatusBarItem } from './goStatus';
