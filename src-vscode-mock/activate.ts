@@ -25,6 +25,7 @@ import { buildCode } from '../src/goBuild';
 import { MessageType, workspace } from './vscode';
 import { updateGoPathGoRootFromConfig, offerToInstallTools, installAllTools } from '../src/goInstallTools';
 import { getCurrentGoPath, getToolsGopath } from '../src/util';
+import { runFillStruct } from '../src/goFillStruct';
 
 export async function activate(lspClient: LspClient, lspServer: LspServer, logger: Logger): Promise<void> {
 	outputChannel.lspClient = lspClient;
@@ -114,6 +115,10 @@ export async function activate(lspClient: LspClient, lspServer: LspServer, logge
 	});
 
 	commands.registerCommand('go.tools.install', installAllTools);
+	
+	commands.registerCommand('go.fill.struct', () => {
+		runFillStruct(window.activeTextEditor);
+	});
 
 	return updateGoPathGoRootFromConfig().then(() => {
 		lspClient.sendTelemetryEvent(workspace.getConfiguration('go'));
