@@ -46,6 +46,7 @@ packages are necessary:
     go get -v honnef.co/go/tools/...
     go get -v github.com/sourcegraph/go-langserver
     go get -v github.com/derekparker/delve/cmd/dlv
+    go get -v github.com/davidrjenni/reftools/cmd/fillstruct
 
 Note: this list comes from
 [here](https://github.com/theia-ide/go-language-server/blob/master/src/goInstallTools.ts#L20-L42).
