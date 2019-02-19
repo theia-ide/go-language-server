@@ -75,7 +75,6 @@ describe('ls', () => {
 				// throw new Error('unsupported');
 			}
 		};
-	
 		server = new LspServer({
 			logger: console,
 			lspClient: client,
@@ -88,11 +87,10 @@ describe('ls', () => {
 			capabilities: {}
 		});
 		mockActivate(client);
-	
 		server.initialized();
 	});
-	
-	let docs: lsp.TextDocumentItem[] = []
+
+	let docs: lsp.TextDocumentItem[] = [];
 
 	function openNewDocument(fileName: string, contents: string) {
 		const path = testFilePath(fileName);
@@ -106,28 +104,28 @@ describe('ls', () => {
 		server.didOpenTextDocument({
 			textDocument: doc
 		});
-		docs.push(doc)
+		docs.push(doc);
 		return doc;
 	}
-	
+
 	afterEach(() => {
 		docs.forEach(doc => {
 			server.didCloseTextDocument({
 				textDocument: doc
 			});
 			unlink(uriToPath(doc.uri));
-		})
-		docs = []
+		});
+		docs = [];
 	});
 
 	describe('completion', () => {
 		it('simple test', async () => {
 			const doc = openNewDocument('main.go', `
 				package main
-				
+
 				func main() {
 					fmt.Println("hello world")
-				}	
+				}
 			`);
 			await getImportablePackages(uriToPath(doc.uri), true);
 			const pos = position(doc, 'fmt.');
@@ -150,16 +148,16 @@ describe('ls', () => {
 			}));
 		});
 	});
-	
+
 	describe('definition', () => {
 		it('simple test', async () => {
 			const doc = openNewDocument('main.go', `
 				package main
-				
+
 				func main() {
 					foo()
-				}	
-	
+				}
+
 				func foo() {
 				}
 			`);
@@ -175,7 +173,7 @@ describe('ls', () => {
 			assert.equal(definitionPos.character, (definition as lsp.Location).range.start.character);
 		});
 	});
-	
+
 	describe('diagnostics', () => {
 		it('simple test', async () => {
 			let diagnosticPromise0 = new Promise<lsp.PublishDiagnosticsParams>((resolve, reject) => {
@@ -183,11 +181,11 @@ describe('ls', () => {
 			});
 			const doc = openNewDocument('main.go', `
 				package main
-				
+
 				func main() {
 					foo2()
-				}	
-	
+				}
+
 				func foo() {
 				}
 			`);
@@ -196,25 +194,25 @@ describe('ls', () => {
 			});
 			buildCode(false);
 			const diagnostics0 = (await diagnosticPromise0).diagnostics;
-			//assert.equal(1, diagnostics0.length);
+			// assert.equal(1, diagnostics0.length);
 			const diagnostics1 = (await diagnosticPromise1).diagnostics;
 			assert.equal(1, diagnostics1.length);
 			assert.equal('undefined: foo2', diagnostics1[0].message);
 		});
 	});
-	
-	
+
+
 	describe('symbol', () => {
 		it('simple test', async () => {
 			const doc = openNewDocument('main.go', `
 				package main
-				
+
 				import "fmt"
-	
+
 				func main() {
 					fmt.Println("");
-				}	
-	
+				}
+
 				func foo() {
 				}
 			`);
@@ -227,17 +225,17 @@ describe('ls', () => {
 			assert.equal('foo', symbols[2].name);
 		});
 	});
-	
-	
+
+
 	describe('formatting', () => {
 		it('full document formatting', async () => {
 			const doc = openNewDocument('main.go',
 				` package
-	test 
-	import  
+	test
+	import
 	"fmt"
-	
-	func foo(x string) { 
+
+	func foo(x string) {
 	fmt   . Println("    ");	foo("")
 	}`);
 			const edits = await server.documentFormatting({
@@ -260,15 +258,15 @@ func foo(x string) {
 `			, result);
 		});
 	});
-	
-	
+
+
 	describe('signatureHelp', () => {
 		it('simple test', async () => {
 			const doc = openNewDocument('main.go', `
 				package test
 				func foo(x string, baz bool) {
 					foo("",true)
-				}			
+				}
 			`);
 			let result = await server.signatureHelp({
 				textDocument: doc,
@@ -282,15 +280,15 @@ func foo(x string) {
 			assert.equal('baz bool', result.signatures[result.activeSignature!].parameters![result.activeParameter!].label);
 		});
 	});
-	
+
 	describe('hover', () => {
 		it('simple test', async () => {
 			const doc = openNewDocument('main.go', `
 				package test
-				// Foo is dangerous 
+				// Foo is dangerous
 				func Foo(x string, baz bool) {
 					return Foo("",true);
-				}			
+				}
 			`);
 			let result = await server.hover({
 				textDocument: doc,
@@ -300,7 +298,7 @@ func foo(x string) {
 			assert.equal('Foo is dangerous\n', result.contents[1]);
 		});
 	});
-	
+
 	// describe('rename', () => {
 	// 	it('simple test', async () => {
 	// 		const doc = openNewDocument('main.go', `
@@ -318,12 +316,12 @@ func foo(x string) {
 	// 		// TODO expectation
 	// 	});
 	// });
-	
+
 	describe('references', () => {
 		it('simple test', async () => {
 			const doc = openNewDocument('main.go', `
 				package test
-				
+
 				func foo(x string) string {
 					return foo("");
 				}
@@ -335,4 +333,4 @@ func foo(x string) {
 			assert.equal(2, result.length);
 		});
 	});
-});	
+});

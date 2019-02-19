@@ -115,7 +115,6 @@ export async function activate(lspClient: LspClient, lspServer: LspServer, logge
 	});
 
 	commands.registerCommand('go.tools.install', installAllTools);
-	
 	commands.registerCommand('go.fill.struct', () => {
 		runFillStruct(window.activeTextEditor);
 	});
