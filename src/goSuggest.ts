@@ -200,7 +200,7 @@ export class GoCompletionItemProvider implements vscode.CompletionItemProvider {
 								let snippet = prefix + ' ${1:methodName}(${2}) ${3} \{\n\t$0\n\}';
 								// [TypeFox]
 								// auxItem.insertText = new vscode.SnippetString(snippet);
-								auxItem.insertText =snippet;
+								auxItem.insertText = snippet;
 								auxItem.insertTextFormat = vscode.InsertTextFormat.Snippet;
 								suggestions.push(auxItem);
 							}
