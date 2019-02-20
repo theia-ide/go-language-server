@@ -32,5 +32,5 @@ export function readContents(path: string): string {
 }
 
 export function unlink(path: string) {
-	return fs.unlinkSync(path)
+	return fs.unlinkSync(path);
 }
