@@ -32,6 +32,7 @@ const allTools: { [key: string]: string } = {
 	'godoc': 'golang.org/x/tools/cmd/godoc',
 	'gogetdoc': 'github.com/zmb3/gogetdoc',
 	'goimports': 'golang.org/x/tools/cmd/goimports',
+    'goformat': 'winterdrache.de/goformat/goformat',
 	'goreturns': 'sourcegraph.com/sqs/goreturns',
 	'golint': 'github.com/golang/lint/golint',
 	'gotests': 'github.com/cweill/gotests/...',
@@ -92,6 +93,8 @@ function getTools(goVersion: SemVersion): string[] {
 	// Install the formattool that was chosen by the user
 	if (goConfig['formatTool'] === 'goimports') {
 		tools.push('goimports');
+    } else if (goConfig['formatTool'] === 'goformat') {
+		tools.push('goformat');
 	} else if (goConfig['formatTool'] === 'goreturns') {
 		tools.push('goreturns');
 	}
