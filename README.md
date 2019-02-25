@@ -25,28 +25,30 @@ Make sure the `go` command is available from your path and that the GOPATH
 environment variable points to where your go packages are installed.  Some go
 packages are necessary:
 
-    go get -v github.com/nsf/gocode
-    go get -v github.com/uudashr/gopkgs/cmd/gopkgs
-    go get -v github.com/ramya-rao-a/go-outline
-    go get -v github.com/acroca/go-symbols
-    go get -v golang.org/x/tools/cmd/guru
-    go get -v golang.org/x/tools/cmd/gorename
-    go get -v github.com/fatih/gomodifytags
-    go get -v github.com/haya14busa/goplay/cmd/goplay
-    go get -v github.com/josharian/impl
-    go get -v github.com/tylerb/gotype-live
-    go get -v github.com/rogpeppe/godef
-    go get -v golang.org/x/tools/cmd/godoc
-    go get -v github.com/zmb3/gogetdoc
-    go get -v golang.org/x/tools/cmd/goimports
-    go get -v sourcegraph.com/sqs/goreturns
-    go get -v github.com/golang/lint/golint
-    go get -v github.com/cweill/gotests/...
-    go get -v github.com/alecthomas/gometalinter
-    go get -v honnef.co/go/tools/...
-    go get -v github.com/sourcegraph/go-langserver
-    go get -v github.com/derekparker/delve/cmd/dlv
-    go get -v github.com/davidrjenni/reftools/cmd/fillstruct
+```shell
+go get -u -v github.com/nsf/gocode
+go get -u -v github.com/uudashr/gopkgs/cmd/gopkgs
+go get -u -v github.com/ramya-rao-a/go-outline
+go get -u -v github.com/acroca/go-symbols
+go get -u -v golang.org/x/tools/cmd/guru
+go get -u -v golang.org/x/tools/cmd/gorename
+go get -u -v github.com/fatih/gomodifytags
+go get -u -v github.com/haya14busa/goplay/cmd/goplay
+go get -u -v github.com/josharian/impl
+go get -u -v github.com/tylerb/gotype-live
+go get -u -v github.com/rogpeppe/godef
+go get -u -v golang.org/x/tools/cmd/godoc
+go get -u -v github.com/zmb3/gogetdoc
+go get -u -v golang.org/x/tools/cmd/goimports
+go get -u -v sourcegraph.com/sqs/goreturns
+go get -u -v github.com/golang/lint/golint
+go get -u -v github.com/cweill/gotests/...
+go get -u -v github.com/alecthomas/gometalinter
+go get -u -v honnef.co/go/tools/...
+go get -u -v github.com/sourcegraph/go-langserver
+go get -u -v github.com/derekparker/delve/cmd/dlv
+go get -u -v github.com/davidrjenni/reftools/cmd/fillstruc
+```
 
 Note: this list comes from
 [here](https://github.com/theia-ide/go-language-server/blob/master/src/goInstallTools.ts#L20-L42).
