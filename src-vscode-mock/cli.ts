@@ -16,6 +16,7 @@ const program = new Command('go-language-server')
 	.option('--node-ipc', 'use node-ipc')
 	.option('--log-level <logLevel>', 'A number indicating the log level (4 = log, 3 = info, 2 = warn, 1 = error). Defaults to `2`.')
 	.option('--socket <port>', 'use socket. example: --socket=5000')
+	.option('--clientProcessId <pid>', 'Provide client process id to the underlying language server. example: --clientProcessId=1234')
 	.parse(process.argv);
 
 if (!(program.stdio || program.socket || program['node-ipc'])) {
